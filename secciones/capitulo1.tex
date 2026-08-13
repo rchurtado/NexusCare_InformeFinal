@@ -1,0 +1,12 @@
+\addcontentsline{toc}{section}{CAPÍTULO I}
+
+\chapter{INTRODUCCIÓN}
+
+\section{Introducción}
+{Este informe documenta el desarrollo de NexusCare, un agente de auditoría clínica basado en IA para el sector de seguros de salud en el Perú, realizado como \textit{Capstone Project} de la Maestría en Ciencia de Datos e Inteligencia Artificial de la UTEC.
+NexusCare aborda la ineficiencia operativa en la auditoría de liquidaciones médicas hospitalarias. Las aseguradoras peruanas (EPS/IAFAS) procesaron en 2024 cerca de 2,5 millones de atenciones, de las cuales 39.500 fueron hospitalarias \cite{susalud2024tedef}. Estas últimas se auditan predominantemente de forma manual, con revisiones de 30 a 45 minutos por caso. La tasa de aprobación automatizada es limitada incluso para las EPS, que cuentan con mayor capacidad tecnológica, y prácticamente inexistente para las IAFAS más pequeñas. El proyecto propone optimizar este proceso mediante un \textit{pipeline} de dos fases que combina un motor determinístico de reglas contractuales con modelos de lenguaje de gran escala (LLM) para analizar la consistencia clínica y generar puntajes de riesgo explicables (0–100), lo que permite al auditor médico concentrar su tiempo en los casos que realmente lo requieren.
+Este trabajo extiende el prototipo validado en \textit{Capstone} 1 \cite{hurtado2025nexuscare}, que demostró la viabilidad técnica del enfoque, con una tasa de \textit{parsing} exitoso del 93 \% en un conjunto de liquidaciones reales. \textit{Capstone} 2 avanza hacia un MVP funcional con arquitectura de producción, incorporando verificación contractual automatizada, protección de datos personales, selección de modelo basada en un \textit{benchmark} comparativo y una interfaz de validación para el auditor.
+El informe se organiza en quince secciones: contexto del problema y estado del arte (2–3), objetivos (3), marco metodológico (4), autodiagnóstico de hipótesis (5), 
+especificación del MVP (6), arquitectura técnica (7), construcción y métricas de validación (8–9), resultados del \textit{pipeline} integrado sobre 101 liquidaciones (10), 
+y limitaciones, aprendizajes, conclusiones y trabajo futuro (11–14), referencias bibliograficas y anexos al final (15).}
+\newpage

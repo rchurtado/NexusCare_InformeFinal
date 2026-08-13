@@ -1,0 +1,118 @@
+\addcontentsline{toc}{section}{CAPÍTULO V}
+
+\chapter{AUTODIAGNÓSTICO INICIAL}
+
+\section{Hipótesis de partida}
+
+La hipótesis central que el MVP busca validar es la siguiente: si NexusCare se implementa como sistema de soporte a la auditoría de liquidaciones médicas, entonces entre el 50 \% y el 60 \% de las liquidaciones hospitalarias calificarán para el carril de \textit{fast-track}, reduciendo el tiempo total de auditoría por lote en al menos un 40 \%, porque el sistema clasifica las liquidaciones de bajo riesgo con justificaciones explicables que permiten al auditor validarlas en aproximadamente 1 minuto, y prioriza la cola de trabajo restante por nivel de riesgo clínico-económico.
+
+Esta hipótesis se sustenta en tres hipótesis técnicas validadas durante Capstone 1:
+
+\noindent 1. Los LLM pueden identificar inconsistencias clínicas en las liquidaciones hospitalarias. Validado parcialmente: MedGemma-4B generó análisis clínicos estructurados para el 93 \% de las liquidaciones (7 casos fallaron por truncamiento del contexto de 8,192 \textit{tokens}). La calidad clínica de los análisis exitosos no fue evaluada con métricas de precisión, dado que no existía un \textit{ground truth} de hallazgos esperados en Capstone 1. La validación completa de esta hipótesis se realizó en Capstone 2 mediante el benchmark de 5 modelos y la ejecución del pipeline integrado.
+
+\noindent 2. El tiempo de procesamiento puede reducirse de 45 minutos a 5 minutos o menos por liquidación. Validado: el modelo genera análisis clínicos estructurados en menos de 30 segundos por caso, al que se suma el tiempo de revisión del auditor.
+
+\noindent 3. Los puntajes de riesgo (0–100) con justificaciones claras son técnicamente viables. Validado: el modelo genera puntajes numéricos, acompañados de explicaciones clínicas textuales, que el auditor puede evaluar.
+
+Sin embargo, Capstone 1 dejó abiertas preguntas sobre la calibración del modelo (tendencia a sobrevalorar el riesgo), la integración con las reglas contractuales específicas del plan y la protección de los datos personales en el flujo de procesamiento. Estas tres brechas definieron la
+
+agenda técnica de Capstone 2: un \textit{benchmark} multimodelo para encontrar la calibración óptima, un motor de reglas contractuales que complementara al LLM y un módulo de anonimización que impidiera que datos personales llegaran al modelo de lenguaje.
+
+\section{Supuestos no validados}
+
+Al inicio de Capstone 2, tres supuestos permanecían sin validar Tabla~\ref{tab:supuestos-no-validados}
+\begin{table}[H]
+    \centering
+    \caption{Supuestos no validados al inicio de Capstone 2}
+    \label{tab:supuestos-no-validados}
+
+    \begin{tabular}{
+        p{0.37\textwidth}
+        p{0.14\textwidth}
+        p{0.41\textwidth}
+    }
+        \toprule
+        \textbf{Supuesto}
+        & \textbf{Criticidad}
+        & \textbf{Consecuencia si es falso} \\
+        \midrule
+
+        Integración fluida con ERPs/TEDEF reales
+        & Alta
+        & Cuellos de botella técnicos impiden el procesamiento en tiempo real. \\
+
+        Adopción y confianza del auditor médico
+        & Alta
+        & El auditor ignora las recomendaciones del sistema, anulando el beneficio operativo. \\
+
+        Acceso a datos históricos para calibración
+        & Media
+        & Imposibilidad de ajustar los parámetros de riesgo del modelo. \\
+
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+El primer supuesto se abordó parcialmente mediante la normalización de los datos crudos a un formato JSON estandarizado, simulando la capa de ingesta que existiría en producción. El segundo motivó el énfasis en la explicabilidad y la transparencia de las justificaciones, reconociendo que la tasa de \textit{fast-track} solo genera valor si el auditor confía en las recomendaciones que recibe. El tercero se mitigó mediante la construcción de un \textit{Golden Set}: un conjunto de 17 liquidaciones hospitalarias curadas y anotadas manualmente que sirve como referencia para evaluar la calidad de las recomendaciones del sistema.
+
+\section{Matriz de riesgos} 
+\begin{table}[H]
+    \centering
+    \caption{Matriz inicial de riesgos del proyecto}
+    \label{tab:matriz-riesgos-inicial}
+
+    \footnotesize
+    \setlength{\tabcolsep}{4pt}
+    \renewcommand{\arraystretch}{1.15}
+
+    \begin{tabular}{
+        p{0.21\textwidth}
+        p{0.12\textwidth}
+        p{0.10\textwidth}
+        p{0.31\textwidth}
+        p{0.18\textwidth}
+    }
+        \toprule
+        \textbf{Riesgo}
+        & \textbf{Probabilidad}
+        & \textbf{Impacto}
+        & \textbf{Estrategia de mitigación}
+        & \textbf{Indicador de alerta} \\
+        \midrule
+
+        Baja adopción por desconfianza del auditor
+        & Media
+        & Alto
+        & Exposición de la justificación clínica completa junto al
+          \textit{score}; medición de la tasa de intervención.
+        & Tasa de intervención $> 80$\,\%. \\
+
+        Alucinaciones del modelo
+        & Media
+        & Alto
+        & \textit{Human-in-the-loop} obligatorio; validación contra
+          un \textit{Golden Set} de 17 casos curados.
+        & Discordancia $> 30$\,\% con el \textit{Golden Set}. \\
+
+        Calidad de los datos de integración
+        & Alta
+        & Medio
+        & Validación estructural con Pydantic v2; monitoreo de la
+          tasa de rechazo técnico.
+        & Rechazo técnico $> 15$\,\%. \\
+
+        Incumplimiento regulatorio (Ley N.\textsuperscript{o} 31814)
+        & Baja
+        & Alto
+        & Supervisión humana obligatoria en todas las decisiones;
+          trazabilidad completa de las justificaciones y
+          anonimización de datos personales antes del procesamiento
+          por el LLM.
+        & Auditoría sin registro de validación humana. \\
+
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+
+\newpage

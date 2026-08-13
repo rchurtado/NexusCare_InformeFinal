@@ -1,0 +1,67 @@
+\addcontentsline{toc}{section}{CAPÍTULO III}
+
+\chapter{OBJETIVOS DEL PROYECTO}
+\section{Objetivo general}
+
+Asistir al auditor médico en la clasificación de liquidaciones hospitalarias en aquellas que califican para el carril de \textit{fast-track} (bajo riesgo, con validación mínima del auditor) y en aquellas que requieren una auditoría manual profunda (alto riesgo clínico-económico), con una reducción del tiempo total de auditoría por lote de al menos 40 \%.
+
+\section{Objetivos específicos}
+
+\noindent 1. Alcanzar una tasa de \textit{fast-track} del 50–60 \% de las liquidaciones hospitalarias. El \textit{fast-track} es el carril expedito del sistema: NexusCare evalúa la liquidación, verifica el cumplimiento contractual, analiza la consistencia clínica y genera una recomendación fundamentada. El auditor médico revisa la justificación y aprueba o rechaza la recomendación en un tiempo estimado de 1 minuto, en contraste con los 30–45 minutos del proceso convencional. Este esquema preserva la supervisión humana exigida por el marco regulatorio (Ley No 31814) y captura la mayor parte del beneficio operativo. La tasa de \textit{fast-track} es la métrica principal del proyecto: captura directamente la propuesta de valor de NexusCare y determina el impacto operativo y económico del sistema.
+
+\noindent 2. Controlar la tasa de falsos positivos (liquidaciones marcadas incorrectamente como de alto riesgo) por debajo de un umbral aceptable para la operación. Este objetivo opera como restricción del anterior: una alta tasa de \textit{fast-track} solo genera valor si no produce glosas injustificadas que deterioren la relación con la red prestadora.
+
+\noindent 3. Reducir el tiempo de procesamiento individual de 45 minutos a 5 minutos por liquidación para los casos que no califican al \textit{fast-track}, generando justificaciones clínicas explicables y trazables en lenguaje natural que permitan al auditor comprender, validar o refutar cada recomendación. La explicabilidad es un requisito funcional del MVP, no un atributo opcional, dado que la adopción del sistema depende directamente de la confianza del auditor en las justificaciones que recibe.
+
+Los indicadores clave de rendimiento (KPI) definidos para el horizonte del proyecto son Tabla~\ref{tab:kpi-proyecto}
+
+\begin{table}[H]
+    \centering
+    \caption{Indicadores clave de rendimiento del proyecto}
+    \label{tab:kpi-proyecto}
+
+    \begin{tabular}{
+        p{0.21\textwidth}
+        p{0.32\textwidth}
+        p{0.23\textwidth}
+        p{0.16\textwidth}
+    }
+        \toprule
+        \textbf{Dimensión}
+        & \textbf{KPI}
+        & \textbf{Meta}
+        & \textbf{Objetivo} \\
+        \midrule
+
+        Productividad
+        & Tasa de \textit{fast-track}
+        & 50--60\,\%
+        & OE1 \\
+
+        Calidad
+        & Tasa de falsos positivos
+        & Por definir en producción
+        & OE2 \\
+
+        Eficiencia individual
+        & Tiempo promedio por liquidación (no \textit{fast-track})
+        & $\leq 5$ minutos
+        & OE3 \\
+
+        Eficiencia operativa
+        & Tiempo total por lote de 101 liquidaciones
+        & $\leq 30$ horas (reducción $\geq 40$\,\%)
+        & Derivado de OE1 y OE3 \\
+
+        Impacto económico
+        & Reducción de MLR
+        & 1--2 puntos porcentuales
+        & Derivado \\
+
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+
+
+\newpage

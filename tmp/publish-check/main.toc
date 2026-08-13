@@ -1,0 +1,96 @@
+\hfill {P\'ag.}\par 
+\babel@toc {spanish}{}\relax 
+\babel@toc {spanish}{}\relax 
+\vspace {1.5em}
+\contentsline {section}{RESUMEN}{12}{chapter*.2}%
+\contentsline {section}{ABSTRACT}{13}{chapter*.3}%
+\contentsline {section}{CAPÍTULO I}{14}{chapter*.3}%
+\contentsline {chapter}{\numberline {I}INTRODUCCIÓN}{14}{chapter.4}%
+\contentsline {section}{\numberline {1.1}Introducción}{14}{section.5}%
+\contentsline {section}{CAPÍTULO II}{15}{section.5}%
+\contentsline {chapter}{\numberline {II}CONTEXTO DEL PROBLEMA}{15}{chapter.6}%
+\contentsline {section}{\numberline {2.1}El sistema EPS/IAFAS peruano}{15}{section.7}%
+\contentsline {section}{\numberline {2.2}El proceso de auditoría médica}{16}{section.8}%
+\contentsline {section}{\numberline {2.3}Cuantificación del problema}{17}{section.9}%
+\contentsline {section}{\numberline {2.4}\textit {Stakeholders}}{19}{section.11}%
+\contentsline {section}{\numberline {2.5}Antecedentes y estado del arte}{20}{section.13}%
+\contentsline {section}{CAPÍTULO III}{22}{section.13}%
+\contentsline {chapter}{\numberline {III}OBJETIVOS DEL PROYECTO}{22}{chapter.14}%
+\contentsline {section}{\numberline {3.1}Objetivo general}{22}{section.15}%
+\contentsline {section}{\numberline {3.2}Objetivos específicos}{22}{section.16}%
+\contentsline {section}{CAPÍTULO IV}{24}{table.caption.17}%
+\contentsline {chapter}{\numberline {IV}MARCO METODOLÓGICO}{24}{chapter.18}%
+\contentsline {section}{\numberline {4.1}\textit {Lean Startup}}{24}{section.19}%
+\contentsline {section}{\numberline {4.2}\textit {Data Science Lifecycle}}{24}{section.20}%
+\contentsline {section}{\numberline {4.3}MLOps}{25}{section.21}%
+\contentsline {section}{\numberline {4.4}Integración de los tres \textit {frameworks}}{26}{section.22}%
+\contentsline {section}{CAPÍTULO V}{27}{section.22}%
+\contentsline {chapter}{\numberline {V}AUTODIAGNÓSTICO INICIAL}{27}{chapter.23}%
+\contentsline {section}{\numberline {5.1}Hipótesis de partida}{27}{section.24}%
+\contentsline {section}{\numberline {5.2}Supuestos no validados}{28}{section.25}%
+\contentsline {section}{\numberline {5.3}Matriz de riesgos}{29}{section.27}%
+\contentsline {section}{CAPÍTULO VI}{30}{table.caption.28}%
+\contentsline {chapter}{\numberline {VI}DEFINICIÓN DEL MVP}{30}{chapter.29}%
+\contentsline {section}{\numberline {6.1}Decisión de negocio}{30}{section.30}%
+\contentsline {section}{\numberline {6.2}Usuario del MVP}{30}{section.31}%
+\contentsline {section}{\numberline {6.3}Flujo \textit {end-to-end}}{31}{section.33}%
+\contentsline {section}{\numberline {6.4}Alcance funcional y no funcional}{32}{section.34}%
+\contentsline {section}{\numberline {6.5}Criterios de éxito cuantitativos}{32}{section.37}%
+\contentsline {section}{\numberline {6.6}Exclusiones explícitas}{33}{section.38}%
+\contentsline {section}{CAPÍTULO VII}{33}{section.38}%
+\contentsline {chapter}{\numberline {VII}ARQUITECTURA DE LA SOLUCIÓN}{34}{chapter.39}%
+\contentsline {section}{\numberline {7.1}Visión general: \textit {pipeline} de dos fases}{34}{section.40}%
+\contentsline {section}{\numberline {7.2}Ingesta y normalización}{37}{section.44}%
+\contentsline {section}{\numberline {7.3}\textit {Identity Vault}: protección de datos personales}{37}{section.45}%
+\contentsline {section}{\numberline {7.4}Fase 1: motor de reglas contractuales}{38}{section.46}%
+\contentsline {section}{\numberline {7.5}Fase 2: evaluación clínica con LLM}{40}{section.47}%
+\contentsline {section}{\numberline {7.6}Motor de decisión y \textit {routing}}{42}{section.49}%
+\contentsline {section}{\numberline {7.7}\textit {Front-end} del auditor}{43}{section.51}%
+\contentsline {section}{\numberline {7.8}\textit {Stack} tecnológico}{45}{section.53}%
+\contentsline {section}{\numberline {7.9}Decisiones de diseño y \textit {trade-offs}}{45}{section.55}%
+\contentsline {section}{\numberline {7.10}Resultados preliminares y proyecciones}{46}{section.56}%
+\contentsline {section}{CAPÍTULO VIII}{47}{table.caption.57}%
+\contentsline {chapter}{\numberline {VIII}DESARROLLO Y CONSTRUCCIÓN}{48}{chapter.58}%
+\contentsline {section}{\numberline {8.1}Cronología de desarrollo}{48}{section.59}%
+\contentsline {section}{\numberline {8.2}Dataset y preparación}{49}{section.61}%
+\contentsline {section}{\numberline {8.3}Construcción del \textit {Golden Set}}{50}{section.62}%
+\contentsline {section}{\numberline {8.4}Proceso de benchmark}{52}{section.64}%
+\contentsline {section}{\numberline {8.5}Iteraciones de \textit {prompt engineering}}{53}{section.66}%
+\contentsline {section}{CAPÍTULO IX}{54}{section.66}%
+\contentsline {chapter}{\numberline {IX}MÉTRICA PRINCIPAL DE VALIDACIÓN}{55}{chapter.67}%
+\contentsline {section}{\numberline {9.1}Definición}{55}{section.68}%
+\contentsline {section}{\numberline {9.2}Métricas secundarias}{56}{section.69}%
+\contentsline {section}{\numberline {9.3}Método de medición}{57}{section.70}%
+\contentsline {section}{CAPÍTULO X}{57}{section.70}%
+\contentsline {chapter}{\numberline {X}EVALUACIÓN DE RESULTADOS}{58}{chapter.71}%
+\contentsline {section}{\numberline {10.1}Resultados del \textit {benchmark}}{58}{section.72}%
+\contentsline {section}{\numberline {10.2}\textit {pipeline} integrado}{60}{section.76}%
+\contentsline {section}{\numberline {10.3}Hallazgos clínicos de alto impacto}{63}{section.81}%
+\contentsline {section}{\numberline {10.4}Validación con \textit {Golden Set}}{64}{section.82}%
+\contentsline {section}{\numberline {10.5}Análisis de costos}{65}{section.83}%
+\contentsline {section}{\numberline {10.6}Cumplimiento de objetivos}{66}{section.85}%
+\contentsline {section}{CAPÍTULO XI}{68}{table.caption.88}%
+\contentsline {chapter}{\numberline {XI}LIMITACIONES Y RIESGOS}{69}{chapter.89}%
+\contentsline {section}{\numberline {11.1}Dataset}{69}{section.90}%
+\contentsline {section}{\numberline {11.2}Modelo}{69}{section.91}%
+\contentsline {section}{\numberline {11.3}Operativas}{70}{section.92}%
+\contentsline {section}{\numberline {11.4}Adopción}{71}{section.93}%
+\contentsline {section}{\numberline {11.5}Regulatorios}{71}{section.94}%
+\contentsline {section}{CAPÍTULO XII}{72}{section.94}%
+\contentsline {chapter}{\numberline {XII}APRENDIZAJES Y LECCIONES}{73}{chapter.95}%
+\contentsline {section}{\numberline {12.1}Técnicos}{73}{section.96}%
+\contentsline {section}{\numberline {12.2}Metodológicos}{74}{section.97}%
+\contentsline {section}{\numberline {12.3}De negocio}{74}{section.98}%
+\contentsline {section}{CAPÍTULO XIII}{75}{section.98}%
+\contentsline {chapter}{\numberline {XIII}CONCLUSIONES}{76}{chapter.99}%
+\contentsline {section}{\numberline {13.1}Validación Preliminar del MVP}{76}{section.100}%
+\contentsline {section}{\numberline {13.2}Contribución}{77}{section.101}%
+\contentsline {section}{\numberline {13.3}Viabilidad}{78}{section.102}%
+\contentsline {section}{CAPÍTULO XIV}{78}{section.102}%
+\contentsline {chapter}{\numberline {XIV}TRABAJO FUTURO}{79}{chapter.103}%
+\contentsline {section}{\numberline {14.1}Corto plazo (3–6 meses)}{79}{section.104}%
+\contentsline {section}{\numberline {14.2}Mediano plazo (6–18 meses)}{80}{section.105}%
+\contentsline {section}{\numberline {14.3}Largo plazo}{80}{section.106}%
+\contentsline {section}{REFERENCIAS BIBLIOGRÁFICAS}{80}{section.106}%
+\contentsline {section}{ANEXOS}{85}{chapter*.107}%
+\contentsfinish 

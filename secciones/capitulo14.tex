@@ -1,0 +1,24 @@
+\addcontentsline{toc}{section}{CAPÍTULO XIV}
+\chapter{TRABAJO FUTURO}
+
+\section{Corto plazo (3–6 meses)}
+
+La prioridad inmediata es un piloto controlado con una IAFAS. El piloto requeriría: acceso a las liquidaciones de producción (no las 101 del \textit{dataset}  actual, sino lotes operativos con diversidad de planes y tipos de atención), la participación de al menos dos auditores médicos para medir la concordancia y los falsos positivos, y un periodo mínimo de 3 meses para capturar la variabilidad temporal. El diseño experimental debería incluir un grupo de control (auditoría manual) y un grupo de tratamiento (auditoría asistida por \textbf{\textit{NexusCare}}), y medir el tiempo total de cierre del lote como variable principal.
+
+Un \textit{feature} crítico pendiente es la verificación de precios: comparar los montos liquidados por la IPRESS con los precios efectivamente convenidos con la IAFAS. Para medicamentos, las fuentes de referencia son el Observatorio Privado de Precios de Medicamentos (OPPM) de APEPS, que reporta precios reales del mercado de boticas, y Kairos, que publica precios de lista de laboratorios. La integración de estas fuentes permitiría detectar automáticamente sobrecostos en la Capa 1 del \textit{pipeline}, antes de que el caso llegue al análisis clínico.
+
+En paralelo, la configuración del sistema debe ampliarse a más planes de salud. El proceso de extracción de reglas desde PDF contractuales (nexuscare/plan extraction/) ya está implementado, pero cada plan requiere validación humana. La prioridad sería configurar los 3–5 planes con mayor volumen de liquidaciones de la EPS piloto.
+
+La calibración de umbrales debe incorporar el \textit{feedback} del auditor. El \textit{Golden Set} actual de 17 casos es un punto de partida; con datos de producción, puede expandirse a 50–100 casos con clasificaciones confirmadas por el auditor, lo que permitiría una calibración con mayor representatividad estadística.
+
+\section{Mediano plazo (6–18 meses)}
+
+La extensión a liquidaciones ambulatorias y odontológicas duplicaría el mercado direccionable del sistema. Las atenciones ambulatorias operan bajo CPM (no FFS), lo que cambia los incentivos de facturación y los tipos de inconsistencia relevantes. El motor de Fase 1 requeriría nuevas configuraciones de reglas, y los \textit{prompts} de Fase 2 necesitarían adaptarse a las diferencias clínicas (las ambulatorias son más breves, con menos ítems pero mayor volumen).
+
+La integración con TEDEF y los ERPs de las IPRESS eliminaría la etapa de ingesta manual. En la actualidad, las liquidaciones se reciben como archivos JSON pre-normalizados. Una integración directa con TEDEF permitiría el procesamiento automatizado de lotes a medida que se reciben, reduciendo el ciclo de cierre. La complejidad principal no es técnica sino organizacional: TEDEF opera bajo estándares definidos por SUSALUD, y cualquier integración requiere certificación.
+
+Un módulo de detección de fraude podría complementar la auditoría de consistencia clínica. Los patrones de fraude más comunes en el sector (procedimientos fantasma, facturación duplicada de dispositivos de alto valor, \textit{upcoding}) requieren análisis longitudinales (comparación entre liquidaciones del mismo prestador) que exceden el alcance del análisis caso por caso actual. Este módulo necesitaría acceso a datos históricos agregados, lo que plantea desafíos adicionales de privacidad y almacenamiento.
+
+\section{Largo plazo}
+
+La evolución natural del sistema apunta a un modelo SaaS \textit{multi-tenant} para múltiples EPS/IAFAS, con la adopción de FHIR como formato nativo, lo que facilita una eventual expansión regional. Colombia, Chile y México enfrentan problemas de auditoría similares con marcos regulatorios en evolución. Como línea de investigación, el hallazgo de que el modelo generalista supera al especialista en esta tarea merece validación en otros dominios clínicos donde el conocimiento especializado podría ser más determinante, como radiología, patología y genómica.

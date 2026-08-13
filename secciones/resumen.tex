@@ -1,0 +1,10 @@
+\chapter*{\center \Large \vspace{-4.5cm} RESUMEN}
+\addcontentsline{toc}{section}{RESUMEN}
+\markboth{RESUMEN}{RESUMEN} 
+\thispagestyle{empty}
+\spacing{1.25}\noindent
+La auditoría de liquidaciones médicas hospitalarias en Perú es un proceso predominantemente manual consumiendo entre 30 y 45 minutos por caso. Un lote típico de 101 liquidaciones requiere 75.8 horas de trabajo por auditor médico especializado, gran parte dedicada a casos rutinarios de bajo riesgo. Este trabajo presenta a NexusCare, un agente de auditoría clínica que combina un motor determinístico de reglas contractuales (Fase 1) con modelos de lenguaje de gran escala (Fase 2) para clasificar cada liquidación según su riesgo clínico-económico y priorizar la revisión especializada.
+
+La selección de modelos utilizó un \textit{benchmark} de cinco LLM (Claude Sonnet 4, Claude Opus 4.6, GPT-5.4, Gemini 2.5 Pro y MedGemma 27B) sobre 101 liquidaciones, totalizando 505 evaluaciones. Sonnet 4 mostró la mayor capacidad de discriminación ($\sigma$ = 20.1), mientras otros modelos presentaron sesgos de sobrepenalización. Se adoptó una estrategia escalonada: Sonnet evalúa el 100 \% de los casos y escala el 33 \% a Opus, reduciendo el costo en 57 \% frente al uso exclusivo de Opus.
+
+El \textit{pipeline} integrado alcanzó 65.3 \% de recomendaciones \textit{fast-track}, con 66 casos de bajo riesgo validables en aproximadamente un minuto, un costo de API de USD 12.00 y 38.9 minutos de procesamiento. La recalibración de umbrales (+41.6 pp), los \textit{prompts} anti-sesgo (+6.0 pp) y el prefiltrado contractual (-7.0 pp) explican el desempeño. La reducción estimada del tiempo total de auditoría oscila entre 57 \% y 72 \%, superando la meta de 40 \%. La validación operativa en producción queda como siguiente paso.

@@ -1,0 +1,176 @@
+\addcontentsline{toc}{section}{CAPÍTULO VI}
+
+\chapter{DEFINICIÓN DEL MVP}
+
+\section{Decisión de negocio}
+
+El MVP aborda una decisión operativa concreta: dado un lote de liquidaciones hospitalarias, clasificar cada una según su nivel de riesgo clínico-económico para determinar si califica para el carril de \textit{fast-track} (bajo riesgo, validación rápida del auditor) o si requiere auditoría profunda.
+
+En la práctica, se busca pasar de un proceso predominantemente manual a un modelo de “revisar solo lo que realmente importa”. Esto no implica eliminar al auditor, sino transformar su rol: de revisor exhaustivo de cada expediente a supervisor estratégico de un flujo priorizado por inteligencia artificial. La mayor parte del tiempo que actualmente dedica a casos rutinarios puede liberarse para el análisis de inconsistencias complejas, la detección de patrones de fraude y la negociación con la red prestadora.
+
+\section{Usuario del MVP}
+\begin{table}[H]
+    \centering
+    \caption{Perfil del usuario operativo del MVP}
+    \label{tab:perfil-usuario-mvp}
+
+    \begin{tabular}{
+        p{0.27\textwidth}
+        p{0.65\textwidth}
+    }
+        \toprule
+        \textbf{Campo}
+        & \textbf{Descripción} \\
+        \midrule
+
+        Rol
+        & Auditor médico (usuario operativo). \\
+
+        Nivel de \textit{expertise}
+        & Alto conocimiento clínico; actualmente realiza tareas operativas repetitivas. \\
+
+        Frecuencia de uso
+        & Diario, mediante la revisión continua de colas de trabajo. \\
+
+        Dolor principal
+        & Dedica la mayor parte de su tiempo a casos rutinarios y administrativos. \\
+
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+
+El auditor médico no es un usuario técnico. No interactúa con APIs ni con código. Requiere una interfaz visual que le presente la información con claridad, con la justificación clínica como elemento central de la pantalla y con acciones de aprobación o rechazo accesibles en pocos clics.
+
+\section{Flujo \textit{end-to-end}}
+
+El flujo mínimo del MVP comprende cinco pasos secuenciales:
+
+\noindent \textbf{1. Ingesta y estandarización.} El sistema recibe los datos de liquidaciones desde ERPs/TEDEF y los estandariza en el formato interno basado en FHIR \textit{Claim} y en CIE-10 (diagnósticos). En el MVP, la entrada consiste en archivos JSON con la estructura normalizada. Los casos cuya información es insuficiente o estructuralmente inválida se rechazan técnicamente mediante validación con Pydantic v2 y se derivan al flujo manual sin pasar por el modelo.
+
+\noindent \textbf{2. Evaluación Fase 1 (reglas contractuales).} Un motor determinístico verifica la elegibilidad del paciente, las exclusiones generales por diagnóstico, las exclusiones de medicamentos y dispositivos y los porcentajes de cobertura según el plan contratado. No requiere IA.
+
+\noindent \textbf{3. Evaluación Fase 2 (IA clínica).} Un LLM analiza la consistencia clínica del expediente en cinco dimensiones: diagnóstico vs. procedimiento, diagnóstico vs. especialidad, protocolo farmacológico, materiales e insumos, y generación de hallazgos. Produce un puntaje de riesgo (0–100) con justificación textual.
+
+\noindent \textbf{4. Clasificación y decisión.} El motor de decisión combina los resultados de Fase 1 y Fase 2 para asignar una de cuatro categorías: FAST\_TRACK, REVISION\_RAPIDA, AUDITORIA\_COMPLETA o RECHAZO\_ADMINISTRATIVO.
+
+\noindent \textbf{5. Visualización y decisión del auditor.} El auditor accede a la interfaz web, revisa la lista de liquidaciones evaluadas con sus puntajes de riesgo, explora los hallazgos y justificaciones, y valida o rechaza las recomendaciones del sistema. En los casos \textit{fast-track}, esta validación toma aproximadamente 1 minuto.
+
+\section{Alcance funcional y no funcional}
+Los requisitos funcionales del MVP se presentan en la
+Tabla~\ref{tab:requisitos-funcionales-mvp}
+
+\begin{table}[H]
+    \centering
+    \caption{Requisitos funcionales del MVP}
+    \label{tab:requisitos-funcionales-mvp}
+
+    \footnotesize
+    \setlength{\tabcolsep}{8pt}
+    \renewcommand{\arraystretch}{1.25}
+
+    \begin{tabular}{
+        p{0.10\textwidth}
+        p{0.82\textwidth}
+    }
+        \toprule
+        \textbf{ID}
+        & \textbf{Requisito} \\
+        \midrule
+
+        RF1
+        & Recibir liquidaciones en formato CSV/JSON desde TEDEF/ERP. \\
+
+        RF2
+        & Codificar y validar según CIE-10 y el formato
+          \textit{FHIR Claim}. \\
+
+        RF3
+        & Seudonimizar los datos personales (PII) antes de cualquier
+          procesamiento con IA. \\
+
+        RF4
+        & Clasificar cada liquidación en una de cuatro categorías de riesgo
+          (\texttt{FAST\_TRACK}, \texttt{REVISION\_RAPIDA},
+          \texttt{AUDITORIA\_COMPLETA} y
+          \texttt{RECHAZO\_ADMINISTRATIVO}) mediante la combinación del
+          motor de reglas y el análisis clínico por IA. \\
+
+        RF5
+        & Proveer trazabilidad de cada decisión, incluyendo la validación
+          humana del auditor. \\
+
+        RF6
+        & Generar una salida estructurada en JSON y reportes en un formato
+          legible. \\
+
+        RF7
+        & Permitir filtros por nivel de riesgo, tipo de hallazgo y
+          diagnóstico. \\
+
+        RF8
+        & Soportar \textit{override} humano con registro de la acción. \\
+
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Los requisitos no funcionales del MVP se presentan en la
+Tabla~\ref{tab:requisitos-no-funcionales-mvp}.
+
+\begin{table}[H]
+    \centering
+    \caption{Requisitos no funcionales del MVP}
+    \label{tab:requisitos-no-funcionales-mvp}
+
+    \footnotesize
+    \setlength{\tabcolsep}{8pt}
+    \renewcommand{\arraystretch}{1.25}
+
+    \begin{tabular}{
+        p{0.12\textwidth}
+        p{0.80\textwidth}
+    }
+        \toprule
+        \textbf{ID}
+        & \textbf{Requisito} \\
+        \midrule
+
+        RNF1
+        & Cumplimiento con la Ley N.\textsuperscript{o} 29733 y con los
+          principios de HIPAA y GDPR. \\
+
+        RNF2
+        & Procesamiento en $\leq 10$ horas por lote de 101 liquidaciones. \\
+
+        RNF3
+        & Arquitectura escalable para el crecimiento del volumen. \\
+
+        RNF4
+        & \textit{Logging} estructurado en JSON con una retención de
+          12 meses. \\
+
+        RNF5
+        & Cifrado TLS 1.3 en tránsito y AES-256 en reposo. \\
+
+        \bottomrule
+    \end{tabular}
+\end{table}
+\section{Criterios de éxito cuantitativos}
+
+El MVP se considera exitoso si cumple con la métrica principal: una tasa de \textit{fast-track} del 50– 60 \% de las liquidaciones hospitalarias, lo que implica que esa proporción de casos es evaluada por el sistema y validada por el auditor en aproximadamente 1 minuto. Las métricas secundarias (control de falsos positivos y reducción del tiempo por lote en al menos un 40 \%) validan la calidad de las recomendaciones y el impacto operativo agregado.
+
+\section{Exclusiones explícitas}
+
+Para mantener un alcance realizable, el MVP excluye:
+
+\begin{itemize}
+    \item En casos de riesgo medio o alto, \textbf{la decisión final es del auditor}. El sistema recomienda, no resuelve.
+    \item La meta de fast-track es el 50–60 \% del lote, correspondiente a la carga rutinaria. No se pretende resolver el 100 \%.
+    \item La estandarización es interna al \textit{pipeline}. \textbf{Los datos de origen (ERPs) no se modifican.}
+    \item Se implementan protocolos básicos de anonimización y cifrado. Una suite de ciberseguridad avanzada queda fuera del alcance del MVP.
+    \item El sistema \textbf{asiste al auditor, no lo sustituye.} El criterio clínico sigue siendo humano, en cumplimiento con los requisitos de supervisión de la Ley No 31814.
+
+\end{itemize}
+
+
