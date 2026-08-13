@@ -26,6 +26,7 @@
 \PassOptionsToPackage{spanish,es-tabla,es-nodecimaldot}{babel}
 \RequirePackage{babel}
 % For Times New Roman
+\RequirePackage{amsthm}
 \RequirePackage{newtxtext,newtxmath}
 % For section styles
 \RequirePackage{titlesec}
@@ -111,7 +112,7 @@
 \thispagestyle{empty}
 \newpage
 \if@twocolumn\hbox{}\newpage\fi\fi\fi}
-\usepackage{amsmath,amsfonts,amssymb,amscd,amsthm,xspace}
+\usepackage{amsmath,amsfonts,amscd,xspace}
 \theoremstyle{plain}
 \newtheorem{example}{Example}[chapter]
 \newtheorem{theorem}{Theorem}[chapter]

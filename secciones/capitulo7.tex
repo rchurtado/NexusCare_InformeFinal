@@ -98,9 +98,9 @@ Las configuraciones de plan se extraen de los contratos de seguro reales en form
 
 \textbf{\textit{Routing} de Fase 1} El resultado de Fase 1 determina el siguiente paso:
 \begin{itemize}
-    \item Si el paciente no es elegible: AUDITORIA_COMPLETA (omite LLM).
-    \item Si el 70 \% o más de los ítems están excluidos: RECHAZO_ADMINISTRATIVO (omite LLM).
-    \item  En cualquier otro caso: TO_LAYER2 (envía a Fase 2 para evaluación clínica).
+    \item Si el paciente no es elegible: \texttt{AUDITORIA\_COMPLETA} (omite LLM).
+    \item Si el 70 \% o más de los ítems están excluidos: \texttt{RECHAZO\_ADMINISTRATIVO} (omite LLM).
+    \item En cualquier otro caso: \texttt{TO\_LAYER2} (envía a Fase 2 para evaluación clínica).
 \end{itemize}
 
 Este \textit{routing} permite ahorrar el costo del LLM cuando ya existe una determinación contractual clara.
@@ -207,7 +207,7 @@ El módulo nexuscare/pipeline/decision.py combina los resultados de Fase 1 y Fas
         \textit{score} $\leq 45$
         & \texttt{FAST\_TRACK} \\
 
-        Fase 1: $\geq 70\,\%$ de ítems excluidos
+        Fase 1: $\geq 70$\,\% de ítems excluidos
         & \texttt{RECHAZO\_ADMINISTRATIVO} \\
 
         Fase 2: \textit{score} entre 46 y 70
