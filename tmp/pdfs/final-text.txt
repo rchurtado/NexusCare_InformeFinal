@@ -1,0 +1,2435 @@
+UNIVERSIDAD DE INGENIERÍA Y TECNOLOGÍA
+
+                ESCUELA DE POSGRADO
+
+
+
+
+ NexusCare: Solución de auditoría automatizada de
+liquidaciones médicas basada en inteligencia artificial
+
+
+                   INFORME PRELIMINAR
+ Para optar el grado de Maestro en Ciencia de Datos e Inteligencia
+                            Artificial
+
+
+                          AUTOR(ES)
+                         Roberto Hurtado
+                          Javier Linares
+
+
+                          ASESOR(ES)
+                           Renzo Osso
+
+
+
+
+                           Lima – Perú
+                               2026
+                             TABLA DE CONTENIDO
+
+
+                                                                                                          Pág.
+RESUMEN . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .     7
+INTRODUCCIÓN . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .          9
+CONTEXTO DEL PROBLEMA . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                  11
+2.1 El sistema EPS/IAFAS peruano . . . . . . . . . . . . . . . . . . . . . . . . .                         11
+2.2 El proceso de auditoría médica . . . . . . . . . . . . . . . . . . . . . . . . .                       12
+2.3 Cuantificación del problema . . . . . . . . . . . . . . . . . . . . . . . . . . .                      14
+2.4 Stakeholders . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                     15
+2.5 Antecedentes y estado del arte . . . . . . . . . . . . . . . . . . . . . . . . . .                     16
+OBJETIVOS DEL PROYECTO. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                19
+3.1 Objetivo general . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                     19
+3.2 Objetivos específicos . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                    19
+MARCO METODOLÓGICO . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                 21
+4.1 Lean Startup . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                     21
+4.2 Data Science Lifecycle . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                     22
+4.3 MLOps . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                      22
+4.4 Integración de los tres frameworks . . . . . . . . . . . . . . . . . . . . . . .                       23
+AUTODIAGNÓSTICO INICIAL . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                24
+5.1 Hipótesis de partida . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                     24
+5.2 Supuestos no validados . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                       25
+5.3 Matriz de riesgos . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                    26
+
+
+
+                                                     1
+DEFINICIÓN DEL MVP . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   27
+6.1 Decisión de negocio . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .              27
+6.2 Usuario del MVP . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                27
+6.3 Flujo end-to-end . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .             28
+6.4 Alcance funcional y no funcional . . . . . . . . . . . . . . . . . . . . . . . .               29
+6.5 Criterios de éxito cuantitativos . . . . . . . . . . . . . . . . . . . . . . . . .             30
+6.6 Exclusiones explícitas . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .             30
+ARQUITECTURA DE LA SOLUCIÓN . . . . . . . . . . . . . . . . . . . . . . . . . . . . .              31
+7.1 Visión general: pipeline de dos fases . . . . . . . . . . . . . . . . . . . . . .              31
+7.2 Ingesta y normalización . . . . . . . . . . . . . . . . . . . . . . . . . . . . .              34
+7.3 Identity Vault: protección de datos personales . . . . . . . . . . . . . . . . .               35
+7.4 Fase 1: motor de reglas contractuales . . . . . . . . . . . . . . . . . . . . . .              36
+7.5 Fase 2: evaluación clínica con LLM . . . . . . . . . . . . . . . . . . . . . . .               38
+7.6 Motor de decisión y routing . . . . . . . . . . . . . . . . . . . . . . . . . . .              40
+7.7 Front-end del auditor . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .            41
+7.8 Stack tecnológico . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .              44
+7.9 Decisiones de diseño y trade-offs . . . . . . . . . . . . . . . . . . . . . . . .              44
+7.10 Resultados preliminares y proyecciones . . . . . . . . . . . . . . . . . . . . .              45
+DESARROLLO Y CONSTRUCCIÓN . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .              47
+8.1 Cronología de desarrollo . . . . . . . . . . . . . . . . . . . . . . . . . . . . .             47
+8.2 Dataset y preparación . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .              49
+8.3 Construcción del Golden Set . . . . . . . . . . . . . . . . . . . . . . . . . .                49
+8.4 Proceso de benchmark . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .               51
+8.5 Iteraciones de prompt engineering . . . . . . . . . . . . . . . . . . . . . . . .              52
+MÉTRICA PRINCIPAL DE VALIDACIÓN. . . . . . . . . . . . . . . . . . . . . . . . . . .               54
+9.1 Definición . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .             54
+9.2 Métricas secundarias . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .             55
+9.3 Método de medición . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .               56
+
+                                                                                                    2
+EVALUACIÓN DE RESULTADOS . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                   58
+10.1 Resultados del benchmark . . . . . . . . . . . . . . . . . . . . . . . . . . . .                      58
+10.2 Pipeline integrado . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                    61
+10.3 Hallazgos clínicos de alto impacto . . . . . . . . . . . . . . . . . . . . . . .                      65
+10.4 Validación con Golden Set . . . . . . . . . . . . . . . . . . . . . . . . . . . .                     66
+10.5 Análisis de costos . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                    67
+10.6 Cumplimiento de objetivos . . . . . . . . . . . . . . . . . . . . . . . . . . .                       67
+LIMITACIONES Y RIESGOS . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .               70
+11.1 Dataset . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                   70
+11.2 Modelo . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                    71
+11.3 Operativas . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                    72
+11.4 Adopción . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                    72
+11.5 Regulatorios . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                    73
+APRENDIZAJES Y LECCIONES . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                 74
+12.1 Técnicos . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                    74
+12.2 Metodológicos . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                     75
+12.3 De negocio . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                    76
+CONCLUSIONES . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .         77
+13.1 Validación Preliminar del MVP . . . . . . . . . . . . . . . . . . . . . . . . .                       77
+13.2 Contribución . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                    78
+13.3 Viabilidad . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                    79
+TRABAJO FUTURO. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .          81
+14.1 Corto plazo (3–6 meses) . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                     81
+14.2 Mediano plazo (6–18 meses) . . . . . . . . . . . . . . . . . . . . . . . . . .                        82
+14.3 Largo plazo . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                     83
+REFERENCIAS BIBLIOGRÁFICAS . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                   84
+ANEXOS . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   87
+15.1 Glosario . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .                    87
+
+                                                                                                            3
+                        ÍNDICE DE TABLAS
+
+
+                                                                                     Pág.
+
+Tabla 2.1. Comparación de indicadores entre la muestra de Capstone 1 y TE-
+     DEF 2024 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .     14
+Tabla 2.2. Stakeholders principales de NexusCare . . . . . . . . . . . . . . .        16
+
+Tabla 3.1. Indicadores clave de rendimiento del proyecto . . . . . . . . . . . .      20
+
+Tabla 5.1. Supuestos no validados al inicio de Capstone 2 . . . . . . . . . . .       25
+Tabla 5.2. Matriz inicial de riesgos del proyecto . . . . . . . . . . . . . . . .     26
+
+Tabla 6.1. Perfil del usuario operativo del MVP . . . . . . . . . . . . . . . . .     27
+Tabla 6.2. Requisitos funcionales del MVP . . . . . . . . . . . . . . . . . . .       29
+Tabla 6.3. Requisitos no funcionales del MVP . . . . . . . . . . . . . . . . .        29
+
+Tabla 7.1. Benchmark comparativo de modelos para Fase 2 . . . . . . . . . .           38
+Tabla 7.2. Reglas de decisión del pipeline integrado . . . . . . . . . . . . . .      41
+Tabla 7.3. Stack tecnológico de NexusCare . . . . . . . . . . . . . . . . . . .       44
+Tabla 7.4. Distribución proyectada de decisiones por categoría . . . . . . . . .      45
+
+Tabla 8.1. Cronología de iteraciones del desarrollo . . . . . . . . . . . . . . .     48
+Tabla 8.2. Composición del Golden Set . . . . . . . . . . . . . . . . . . . . .       51
+Tabla 8.3. Configuración del benchmark por modelo . . . . . . . . . . . . . .         52
+
+Tabla 10.1. Correlación entre número de ítems por liquidación y risk score . . .      60
+Tabla 10.2. Distribución real de decisiones del pipeline integrado . . . . . . . .    61
+
+                                         4
+Tabla 10.3. Cambio en la distribución de scores de Sonnet . . . . . . . . . . .        62
+Tabla 10.4. Estudio de ablación de la mejora en tasa de fast-track . . . . . . . .     64
+Tabla 10.5. Comparación de estrategias de procesamiento . . . . . . . . . . . .        67
+Tabla 10.6. Cumplimiento de objetivos del proyecto . . . . . . . . . . . . . . .       68
+Tabla 10.7. Sensibilidad de la reducción de tiempo por lote . . . . . . . . . . .      68
+Tabla 10.8. Sensibilidad de la tasa efectiva de fast-track . . . . . . . . . . . . .   69
+
+
+
+
+                                                                                        5
+                       ÍNDICE DE FIGURAS
+
+
+                                                                                      Pág.
+
+Figura 7.1. Workflow del sistema: flujo de cinco fases desde la liquidación hasta
+     la decisión del auditor. . . . . . . . . . . . . . . . . . . . . . . . . . . .    32
+Figura 7.2. Diagrama C4 de contexto del problema: nivel 1. . . . . . . . . . .         33
+Figura 7.3. Diagrama C4 de contenedores del sistema. . . . . . . . . . . . . .         33
+Figura 7.4. Interfaz del auditor: vista detallada de una liquidación. . . . . . . .    43
+
+Figura 10.1. Distribución de puntajes de riesgo por modelo. . . . . . . . . . . .      59
+Figura 10.2. Promedio de hallazgos por liquidación, por tipo y modelo. . . . . .       60
+Figura 10.3. Distribución real de decisiones del pipeline integrado. . . . . . . .     63
+
+
+
+
+                                         6
+RESUMEN
+
+       La auditoría de liquidaciones médicas hospitalarias en el Perú es un proceso pre-
+dominantemente manual que consume entre 30 y 45 minutos por caso. Un lote típico de
+101 liquidaciones requiere 75.8 horas de trabajo de un auditor médico especializado, quien
+dedica la mayor parte de ese tiempo a casos rutinarios de bajo riesgo. Este trabajo presenta
+NexusCare, un agente de auditoría clínica que combina un motor determinístico de reglas
+contractuales (Fase 1) con modelos de lenguaje de gran escala (Fase 2) para clasificar cada
+liquidación según su nivel de riesgo clínico-económico y permitir al auditor concentrar su
+experiencia en los casos que genuinamente lo requieren.
+
+       La selección de modelos se basó en un benchmark comparativo de cinco LLM
+(Claude Sonnet 4, Claude Opus 4.6, GPT-5.4, Gemini 2.5 Pro y MedGemma 27B) sobre
+las 101 liquidaciones, para un total de 505 evaluaciones. Claude Sonnet 4 demostró la
+mayor capacidad de discriminación (σ = 20.1), mientras que los modelos especializados
+y de mayor escala presentaron sesgos de sobre-penalización que los hacen inviables co-
+mo modelo único de screening. En respuesta, se adoptó una estrategia escalonada en la
+que Sonnet evalúa el 100 % de los casos y escala el 33 % a Opus para análisis profundo,
+reduciendo el costo en 57 % respecto al uso exclusivo de Opus.
+
+       La ejecución del pipeline integrado alcanzó una tasa de recomendación de fast-
+track de 65.3 % (66 casos clasificados como de bajo riesgo, validables por el auditor en
+
+
+
+                                             7
+aproximadamente 1 minuto), con un costo de API de USD 12.00 y un tiempo de procesa-
+miento de 38.9 minutos.
+
+       Para entender el origen de esta mejora, se comparó el pipeline bajo cuatro confi-
+guraciones distintas, activando y desactivando cada componente de forma independiente.
+Los tres factores que explican la diferencia son la recalibración de umbrales (+41.6 pp), los
+prompts de producción con instrucciones anti-sesgo (+6.0 pp) y el prefiltrado contractual
+de Fase 1 (-7.0 pp), este último con el efecto de mejorar la calidad de la discriminación a
+costa de una menor tasa bruta.
+
+       La reducción estimada del tiempo total de auditoría por lote oscila entre 57 % y
+72 %, según el escenario de adopción, superando la meta de 40 % incluso en el caso más
+conservador. La validación operativa con auditores en producción queda pendiente como
+siguiente paso.
+
+
+
+
+                                                                                           8
+                                   CAPÍTULO I
+
+                               INTRODUCCIÓN
+
+
+
+       Este informe documenta el desarrollo de NexusCare, un agente de auditoría clínica
+basado en IA para el sector de seguros de salud en el Perú, realizado como Capstone Project
+de la Maestría en Ciencia de Datos e Inteligencia Artificial de la UTEC.
+
+       NexusCare aborda la ineficiencia operativa en la auditoría de liquidaciones médi-
+cas hospitalarias. Las aseguradoras peruanas (EPS/IAFAS) procesaron en 2024 cerca de
+2,5 millones de atenciones, de las cuales 39.500 fueron hospitalarias (SUSALUD, 2024).
+Estas últimas se auditan predominantemente de forma manual, con revisiones de 30 a 45
+minutos por caso. La tasa de aprobación automatizada es limitada incluso para las EPS,
+que cuentan con mayor capacidad tecnológica, y prácticamente inexistente para las IAFAS
+más pequeñas. El proyecto propone optimizar este proceso mediante un pipeline de dos
+fases que combina un motor determinístico de reglas contractuales con modelos de lengua-
+je de gran escala (LLM) para analizar la consistencia clínica y generar puntajes de riesgo
+explicables (0–100), lo que permite al auditor médico concentrar su tiempo en los casos
+que realmente lo requieren.
+
+       Este trabajo extiende el prototipo validado en Capstone 1 (Hurtado & Linares,
+2025), que demostró la viabilidad técnica del enfoque, con una tasa de parsing exitoso del
+93 % en un conjunto de liquidaciones reales. Capstone 2 avanza hacia un MVP funcional
+con arquitectura de producción, incorporando verificación contractual automatizada, pro-
+tección de datos personales, selección de modelo basada en un benchmark comparativo y
+una interfaz de validación para el auditor.
+       El informe se organiza en quince secciones: contexto del problema y estado del arte
+(2–3), objetivos (3), marco metodológico (4), autodiagnóstico de hipótesis (5), especifica-
+ción del MVP (6), arquitectura técnica (7), construcción y métricas de validación (8–9),
+resultados del pipeline integrado sobre 101 liquidaciones (10), y limitaciones, aprendiza-
+jes, conclusiones y trabajo futuro (11–14), referencias bibliograficas y anexos al final (15)
+
+
+
+
+                                                                                          10
+                                   CAPÍTULO II
+
+                    CONTEXTO DEL PROBLEMA
+
+
+
+2.1   El sistema EPS/IAFAS peruano
+
+
+       El sistema privado de salud del Perú opera bajo la regulación de la Superinten-
+dencia Nacional de Salud (SUSALUD) e involucra tres actores institucionales principales.
+Las IAFAS (Instituciones Administradoras de Fondos de Aseguramiento en Salud), entre
+las cuales se encuentran las EPS (Entidades Prestadoras de Salud), gestionan los fondos y
+planes de aseguramiento. Las IPRESS (Instituciones Prestadoras de Servicios de Salud),
+es decir, clínicas y hospitales, brindan la atención médica y presentan las liquidaciones
+(claims) para su reembolso. SUSALUD supervisa la relación entre ambas partes y estable-
+ce los marcos normativos, incluidos los estándares para el intercambio de información a
+través de la plataforma TEDEF.
+
+       Cada liquidación médica hospitalaria contiene datos estructurados del paciente,
+diagnósticos codificados según la Clasificación Internacional de Enfermedades (CIE-10),
+procedimientos con códigos propios de las IPRESS, prescripciones farmacológicas, mate-
+riales e insumos, servicios de imagenología y consultas. Los montos oscilan entre cientos
+y decenas de miles de soles por caso, con un promedio de S/21,840 por hospitalización,
+según el análisis del dataset del estudio.
+
+       Un problema persistente del sistema es la heterogeneidad de los datos. Al no existir
+una adopción generalizada de estándares de interoperabilidad como HL7 FHIR (HL7 Inter-
+national, 2019), cada IPRESS codifica sus registros clínicos y administrativos en formatos
+propios. Si bien la plataforma TEDEF de SUSALUD define un formato de intercambio,
+este carece del rigor esperado en un sistema transaccional: omite validaciones clave y de-
+ja margen a ambigüedades que limitan su efectividad. Esto impone un doble esfuerzo de
+normalización, tanto para las IPRESS, que deben adaptar sus modelos de datos al formato
+TEDEF, como para las aseguradoras, que deben homologar cada caso antes de auditarlo.
+El resultado es un proceso de liquidaciones que genera una alta fricción operativa entre
+todas las partes involucradas.
+
+
+
+2.2   El proceso de auditoría médica
+
+
+       La auditoría de liquidaciones médicas es hoy un proceso que depende en gran medi-
+da de la revisión manual. Cada liquidación que ingresa a la IAFAS es evaluada por un audi-
+tor médico, un profesional de la salud con experiencia clínica, quien verifica la pertinencia
+del diagnóstico, la coherencia entre los procedimientos y los medicamentos prescritos, el
+cumplimiento de las coberturas contractuales y la razonabilidad de los costos facturados,
+conforme a los acuerdos previamente pactados entre financiador y prestador.
+
+       Es importante considerar los mecanismos de pago, pues determinan los incentivos
+de cada actor. Las atenciones ambulatorias operan bajo el modelo de Costo Paciente Mes
+(CPM), un pago fijo per cápita que transfiere el riesgo operativo a la IPRESS: al recibir un
+monto predeterminado, independientemente del consumo real, el prestador tiene incenti-
+vos para ser eficiente en el uso de los recursos. Las atenciones hospitalarias, en cambio, se
+liquidan mediante Fee for Service (FFS), un esquema de facturación abierta en el que cada
+procedimiento, medicamento e insumo se cobra por separado. Bajo FFS, los incentivos
+están estructuralmente alineados con la sobrefacturación: a mayor volumen de servicios
+registrados, mayor el reembolso. Esta asimetría convierte las liquidaciones hospitalarias
+en el punto de mayor riesgo económico para la aseguradora y refuerza la necesidad de una
+auditoría rigurosa precisamente donde el proceso manual es más lento y costoso.
+
+       Los datos operativos del problema son concretos:
+
+                                                                                          12
+       Tiempo por caso: 30 a 45 minutos de revisión por liquidación hospitalaria.
+
+       Capacidad diaria: aproximadamente 13 casos por auditor por jornada.
+
+       Carga por lote: un lote de 101 liquidaciones requiere 75.8 horas de trabajo manual.
+
+       Distribución del esfuerzo: gran parte del tiempo del auditor médico se destina a
+casos rutinarios de bajo riesgo.
+
+       Tasa de aprobación automatizada: limitada; se realiza un muestreo priorizado, se-
+gún la experiencia de cada auditor, para una revisión humana completa.
+
+       El auditor médico posee una alta especialización clínica, pero la estructura actual
+lo obliga a dedicar la mayor parte de su tiempo a tareas operativas repetitivas. Los casos
+complejos, como
+
+       inconsistencias clínicas graves, sobrecostos sistemáticos y fraudes como procedi-
+mientos fantasma (prótesis o dispositivos facturados pero no implantados), reciben menos
+atención de la que merecen porque el auditor está ocupado procesando la cola de casos tri-
+viales. Además, el modelo actual no es escalable: un crecimiento en el volumen de atencio-
+nes exige contratar proporcionalmente más auditores médicos especializados, un recurso
+escaso y costoso.
+
+       Para dimensionar la carga operativa, una liquidación hospitalaria típica contiene
+entre 17 y 368 ítems (el rango observado en el dataset de estudio). Un caso de medicina
+interna con 17 ítems puede resolverse en 15 minutos. Un caso de cardiología hemodiná-
+mica con 368 ítems y stents coronarios requiere 45 minutos o más porque el auditor debe
+verificar la pertinencia de cada dispositivo frente a las coberturas del plan, contrastar los
+códigos de procedimientos con el diagnóstico y evaluar si los costos de los materiales de al-
+to valor se encuentran dentro de los rangos aceptables. Ambos casos reciben hoy el mismo
+tratamiento: una revisión manual completa.
+
+
+
+                                                                                          13
+2.3   Cuantificación del problema
+
+
+        A nivel del sistema EPS, el TEDEF registró en 2024 un total de 2,522,496 atencio-
+nes valorizadas en S/ 1,164.7 millones. Las hospitalizaciones representan apenas el 1.6 %
+del volumen pero concentran el 30.5 % del gasto, con un costo por caso 27.5 veces superior
+al ambulatorio.
+
+        El análisis exploratorio de Capstone 1, sobre 68,521 liquidaciones de una IPRESS
+especializada en alta complejidad, muestra una concentración aún mayor (Tabla II.1). El
+perfil de complejidad de la IPRESS de origen explica los costos promedio más elevados
+en comparación con el sistema.
+
+
+
+
+      Tabla 2.1. Comparación de indicadores entre la muestra de Capstone 1 y TEDEF 2024
+
+
+
+        La concentración de costos en hospitalizaciones, constante en ambas fuentes, jus-
+tifica focalizar el MVP en este tipo de atención. Las oportunidades de detección de in-
+consistencias y sobrecostos son proporcionalmente mayores en casos de alta complejidad,
+precisamente en el segmento donde el sistema opera con mayor volumen económico y
+menor automatización.
+
+        La tasa de inconsistencias del 13 % en las aprobaciones indica que un volumen
+no menor de liquidaciones está siendo aprobado con observaciones que podrían haberse
+detectado con un análisis más sistemático. El MLR superior al 90 % excede en 5 puntos
+porcentuales o más el benchmark internacional del 85 %, lo que sugiere un margen de
+mejora en la eficiencia de la gestión técnica de siniestros (Topol, 2019). La tasa de in-
+consistencias del 13 % y el MLR superior al 90 % provienen de información levantada en
+
+                                                                                          14
+entrevista con el Gerente General de la IAFAS. Si bien se trata de una fuente experta del
+negocio, estos valores deben interpretarse como referencia contextual y no como medición
+auditada del estudio.
+
+       Los sistemas de información fragmentados agravan el problema. Cada IPRESS
+utiliza un ERP diferente y formatos propietarios para la transmisión de liquidaciones. En
+medicamentos, la adopción del estándar GTIN en la trama TEDEF ha mitigado significati-
+vamente la heterogeneidad: un mismo fármaco se identifica mediante un código de barras
+único independientemente del prestador. Sin embargo, en los procedimientos médicos, la
+heterogeneidad es pasmosa. Cada EPS mantiene un catálogo propietario con codificación,
+granularidad y nomenclatura distintas. Un trabajo de homologación realizado por los au-
+tores sobre el catálogo de una EPS de primer nivel (16,110 códigos vigentes) reveló que
+estos procedimientos se mapean a solo 4,707 códigos CPT únicos, una relación 3.4:1 que
+evidencia la redundancia y fragmentación de los catálogos propietarios.
+
+       A nivel de nomenclatura, un mismo procedimiento puede aparecer como
+RIESGOCORONARIO-TRIGLIC. -COLEST.-HDL-LDL-VLDL en una EPS y como
+PERFIL LIPIDICO COMPLETO en otra, refiriéndose ambas al mismo panel de colesterol
+(CPT 82465). Esta heterogeneidad dificulta la detección automatizada de duplicados y
+sobrecostos, y es una de las razones por las que la industria no ha avanzado hacia la
+auto-adjudicación (Mandl & Kohane, 2012). NexusCare aborda esta brecha mediante la
+normalización de texto con funciones específicas para el español peruano y el keyword
+matching tolerante a variaciones de escritura.
+
+
+
+2.4   Stakeholders
+
+
+       La solución involucra a cuatro actores con intereses diferenciados:
+
+       El auditor médico es el usuario operativo directo del sistema. Su perfil combina un
+alto conocimiento clínico con una trayectoria predominantemente operativa. NexusCare
+                                                                                       15
+no busca reemplazar su criterio, sino transformar su rol: de revisor exhaustivo de cada
+expediente a supervisor
+
+
+
+
+                     Tabla 2.2. Stakeholders principales de NexusCare
+
+
+
+       estratégico de un flujo priorizado por inteligencia artificial, concentrando su expe-
+riencia en los casos que generan mayor valor.
+
+       Los pacientes, aunque no interactúan con el sistema, son beneficiarios indirectos.
+Un proceso de auditoría más eficiente reduce los tiempos de resolución de las liquidacio-
+nes, lo que podría acelerar los ciclos de pago a las IPRESS. Al disminuir su carga finan-
+ciera, estas podrían trasladar eficiencias a costos más competitivos y, en consecuencia, a
+planes de salud más accesibles. Adicionalmente, una mejor detección de inconsistencias
+protege al paciente de prácticas de facturación que podrían indicar atención inadecuada o
+procedimientos cobrados pero no realizados.
+
+
+
+2.5   Antecedentes y estado del arte
+
+
+       En mercados maduros, la automatización de liquidaciones médicas es una indus-
+tria consolidada. En Estados Unidos, las aseguradoras de salud operan con tasas de auto-
+adjudicación que promedian el 80 %, con líderes del sector alcanzando entre 85 % y 95 %
+en liquidaciones ambulatorias y de farmacia (HCIM, 2024). Plataformas como Cotiviti
+(que atiende a más de 100 planes de salud), Optum (con más de 2,000 ingenieros dedica-
+dos a IA) y HealthEdge han evolucionado desde motores de reglas determinísticos hacia
+                                                                                        16
+sistemas híbridos que incorporan machine learning y, más recientemente, modelos de len-
+guaje. Optum lanzó en 2025 una plataforma de validación de cobertura en tiempo real con
+Azure OpenAI, y EXL Health desarrolló un LLM específico para seguros que, según sus
+evaluaciones internas, supera en 30 % a GPT-4 en tareas del dominio (EXL Service, 2024).
+Sin embargo, estas soluciones operan sobre infraestructuras de datos estandarizadas (EDI
+X12, HL7 FHIR) y marcos de codificación unificados (CPT, ICD-10-CM) que no existen
+en el mercado peruano.
+
+       La literatura académica reciente ofrece un panorama matizado sobre el uso de LLM
+en tareas administrativas de salud. Soroush et al. (2024), en NEJM AI, evaluaron GPT-4
+en codificación médica y encontraron tasas de coincidencia exacta inferiores al 50 % sin
+ajuste fino, un resultado que cuestiona el uso de LLM generalistas para tareas de codifica-
+ción estructurada. No obstante, Mustafa et al. (2025), en npj Health Systems, demostraron
+que el fine-tuning sobre pares códigodescripción ICD-10 eleva esa precisión del 1 % al
+97 %. Un hallazgo relevante para NexusCare proviene de Dorfner et al. (2024): en una
+evaluación de modelos biomédicos especializados frente a sus contrapartes generalistas,
+los modelos especializados tuvieron un rendimiento inferior en todas las métricas evalua-
+das sobre datos médicos no vistos. Este resultado es consistente con lo observado en el
+benchmark de NexusCare, donde MedGemma 27B fue superado por Claude Sonnet en
+capacidad de discriminación.
+
+       En América Latina, Colombia es el caso más avanzado. La ADRES desarrolló un
+sistema inteligente de auditoría mediante alianzas con Microsoft, AWS, Google Cloud y
+Oracle, y en 2025 seleccionó un prototipo basado en agentes especializados que examinan
+distintos aspectos de cada factura médica (Consultor Salud, 2025). Brasil proyecta invertir
+USD 527 millones en IA para seguros en 2026 (CNseg/EY, 2026), con plataformas locales
+como ITCygnus operando ya en más de 350 municipios, con validación automática de
+códigos ICD-10 frente a estándares brasileños.
+
+
+
+
+                                                                                        17
+       En el Perú, el ecosistema de liquidaciones médicas sigue siendo mayoritariamente
+manual. La plataforma TEDEF de SUSALUD estandariza el intercambio electrónico de
+datos entre IPRESS e IAFAS, pero no incorpora inteligencia artificial en el procesamiento:
+opera como validador de formato, no como auditor de contenido. Los proyectos de IA de
+EsSalud se enfocan en aplicaciones clínicas, no en el procesamiento de liquidaciones, y
+no se identificó ninguna solución de IA para la auditoría de liquidaciones operando en
+el mercado peruano. El marco regulatorio, sin embargo, avanza: la Ley No 31814 y su
+reglamento (DS 115-2025-PCM), vigentes desde enero de 2026, clasifican la salud como
+sector de alto riesgo para aplicaciones de IA y establecen requisitos de supervisión humana
+y transparencia algorítmica, requisitos que NexusCare incorpora desde su diseño.
+
+       NexusCare se posiciona en esta brecha: entre las soluciones comerciales de mer-
+cados maduros, que requieren una infraestructura de datos que el Perú aún no posee, y la
+ausencia de herramientas locales. La arquitectura de dos fases (reglas + LLM) responde a
+la realidad del mercado peruano (datos heterogéneos, catálogos propietarios, ausencia de
+FHIR) con un enfoque que no depende de la estandarización previa del ecosistema para
+funcionar.
+
+
+
+
+                                                                                        18
+                                  CAPÍTULO III
+
+                     OBJETIVOS DEL PROYECTO
+
+
+
+3.1   Objetivo general
+
+
+       Asistir al auditor médico en la clasificación de liquidaciones hospitalarias en aque-
+llas que califican para el carril de fast-track (bajo riesgo, con validación mínima del auditor)
+y en aquellas que requieren una auditoría manual profunda (alto riesgo clínico-económico),
+con una reducción del tiempo total de auditoría por lote de al menos 40 %.
+
+
+
+3.2   Objetivos específicos
+
+
+1. Alcanzar una tasa de fast-track del 50–60 % de las liquidaciones hospitalarias. El fast-
+track es el carril expedito del sistema: NexusCare evalúa la liquidación, verifica el cum-
+plimiento contractual, analiza la consistencia clínica y genera una recomendación funda-
+mentada. El auditor médico revisa la justificación y aprueba o rechaza la recomendación
+en un tiempo estimado de 1 minuto, en contraste con los 30–45 minutos del proceso con-
+vencional. Este esquema preserva la supervisión humana exigida por el marco regulatorio
+(Ley No 31814) y captura la mayor parte del beneficio operativo. La tasa de fast-track es la
+métrica principal del proyecto: captura directamente la propuesta de valor de NexusCare
+y determina el impacto operativo y económico del sistema.
+
+2. Controlar la tasa de falsos positivos (liquidaciones marcadas incorrectamente como de
+alto riesgo) por debajo de un umbral aceptable para la operación. Este objetivo opera como
+restricción del anterior: una alta tasa de fast-track solo genera valor si no produce glosas
+injustificadas que deterioren la relación con la red prestadora.
+3. Reducir el tiempo de procesamiento individual de 45 minutos a 5 minutos por liquida-
+ción para los casos que no califican al fast-track, generando justificaciones clínicas explica-
+bles y trazables en lenguaje natural que permitan al auditor comprender, validar o refutar
+cada recomendación. La explicabilidad es un requisito funcional del MVP, no un atributo
+opcional,
+
+       dado que la adopción del sistema depende directamente de la confianza del auditor
+en las justificaciones que recibe.
+
+       Los indicadores clave de rendimiento (KPI) definidos para el horizonte del proyecto
+son:
+
+
+
+
+                   Tabla 3.1. Indicadores clave de rendimiento del proyecto
+
+
+
+
+                                                                                           20
+                                  CAPÍTULO IV
+
+                        MARCO METODOLÓGICO
+
+
+
+       El desarrollo de NexusCare se apoyó en tres marcos de trabajo que operan en pa-
+ralelo, cada uno sobre una dimensión distinta del problema: qué construir, cómo modelar
+y cómo asegurar la fiabilidad del sistema en producción.
+
+
+
+4.1   Lean Startup
+
+
+       El marco de Lean Startup (Ries, 2011; Blank, 2013) guía las decisiones de producto
+y la validación de hipótesis con el usuario final.
+
+       Build: el producto se desarrolló con la participación directa de auditores médicos,
+utilizando datos reales (101 liquidaciones hospitalarias del Q3 2025 de MediVida) desde
+la primera iteración.
+
+       Measure: las métricas de validación se definieron antes de escribir código: tiempo
+por lote, tasa de fast-track, concordancia auditor–sistema y tasa de falsos positivos.
+
+       Learn: el ciclo de iteración se fijó entre 2 y 4 semanas, con el feedback del auditor
+sobre la calidad de las justificaciones clínicas y la calibración de los umbrales de riesgo.
+
+       Si el auditor no confía en el resultado del sistema ni lo incorpora en su flujo de
+trabajo, la calidad técnica del modelo resulta irrelevante (Char et al., 2018).
+4.2   Data Science Lifecycle
+
+
+       El ciclo de vida de ciencia de datos estructura el trabajo analítico y de modelado,
+adaptando principios de CRISP-DM al contexto de sistemas basados en LLM.
+
+       Understand: análisis profundo del dominio clínico-regulatorio realizado en Capsto-
+ne 1, donde se procesaron 68,521 liquidaciones para caracterizar patrones de diagnóstico,
+costos y especialidades (Hurtado & Linares, 2025).
+
+       Model: benchmark comparativo de cinco modelos (Claude Sonnet 4, Claude Opus
+4.6, GPT-5.4, Gemini 2.5 Pro, MedGemma 27B) sobre 101 liquidaciones reales (505 eva-
+luaciones totales), evaluando consistencia, profundidad clínica, costo y latencia.
+
+       Deploy: pipeline de producción con manejo de errores, estimación de costos y pro-
+cesamiento por lotes con logging estructurado.
+
+       La etapa de modelado difiere del ciclo clásico de machine learning porque no se
+entrenan modelos propios. En su lugar, se evalúa y selecciona la combinación óptima de
+modelos preentrenados, y se diseñan los prompts y la lógica de orquestación que determi-
+nan el comportamiento del sistema (Sculley et al., 2015).
+
+
+
+4.3   MLOps
+
+
+       El marco MLOps asegura la reproducibilidad, trazabilidad y mantenibilidad del
+sistema en operación.
+
+       CI/CD: 190 pruebas automatizadas distribuidas en 7 archivos de test (checker, mat-
+chers, pipeline, escalation, vault, golden set, integration), ejecutables con pytest.
+
+       Golden Set: conjunto curado de 17 liquidaciones con clasificaciones esperadas (10
+fasttrack, 2 complejas, 2 condicionales, 3 geriátricos de alta complejidad), utilizado como
+
+                                                                                        22
+regresión para validar que los cambios en umbrales o prompts no degradan las decisiones
+del pipeline.
+
+       Versionado: los prompts clínicos, las configuraciones de planes y los archivos de
+configuración de modelos se gestionan bajo control de versiones junto con el código fuente.
+
+       Monitoreo: logging estructurado en cada etapa del pipeline (anonimización, Fase 1,
+Fase 2, escalación, decisión), con seguimiento de métricas de latencia, errores de parsing
+y costos estimados por llamada a API.
+
+       La adopción de prácticas MLOps es relevante en IA aplicada a la salud, donde la
+trazabilidad de cada decisión automatizada puede ser requerida en procesos de auditoría
+regulatoria o en disputas contractuales con las IPRESS (Rajkomar et al., 2019).
+
+
+
+4.4   Integración de los tres frameworks
+
+
+       Los tres marcos cubren dimensiones distintas sin solaparse. Lean Startup obliga a
+confrontar cada supuesto de negocio con el usuario real antes de invertir en el desarrollo.
+El Data Science Lifecycle ordena el trabajo analítico, desde la exploración de las 68,521
+liquidaciones hasta la selección del modelo en el benchmark. MLOps, por su parte, res-
+ponde a una exigencia concreta del sector: la Ley No 29733 (Congreso de la República del
+Perú, 2011) y la regulación de SUSALUD (SUSALUD, 2023) requieren que las decisiones
+automatizadas sobre datos de salud sean trazables y reproducibles. Sin esa trazabilidad, el
+sistema no es desplegable en el contexto regulatorio peruano.
+
+
+
+
+                                                                                        23
+                                   CAPÍTULO V
+
+                   AUTODIAGNÓSTICO INICIAL
+
+
+
+5.1   Hipótesis de partida
+
+
+       La hipótesis central que el MVP busca validar es la siguiente: si NexusCare se im-
+plementa como sistema de soporte a la auditoría de liquidaciones médicas, entonces entre
+el 50 % y el 60 % de las liquidaciones hospitalarias calificarán para el carril de fast-track,
+reduciendo el tiempo total de auditoría por lote en al menos un 40 %, porque el sistema
+clasifica las liquidaciones de bajo riesgo con justificaciones explicables que permiten al
+auditor validarlas en aproximadamente 1 minuto, y prioriza la cola de trabajo restante por
+nivel de riesgo clínico-económico.
+
+       Esta hipótesis se sustenta en tres hipótesis técnicas validadas durante Capstone 1:
+
+1. Los LLM pueden identificar inconsistencias clínicas en las liquidaciones hospitalarias.
+Validado parcialmente: MedGemma-4B generó análisis clínicos estructurados para el 93 %
+de las liquidaciones (7 casos fallaron por truncamiento del contexto de 8,192 tokens). La
+calidad clínica de los análisis exitosos no fue evaluada con métricas de precisión, dado que
+no existía un ground truth de hallazgos esperados en Capstone 1. La validación completa de
+esta hipótesis se realizó en Capstone 2 mediante el benchmark de 5 modelos y la ejecución
+del pipeline integrado.
+
+2. El tiempo de procesamiento puede reducirse de 45 minutos a 5 minutos o menos por
+liquidación. Validado: el modelo genera análisis clínicos estructurados en menos de 30
+segundos por caso, al que se suma el tiempo de revisión del auditor.
+3. Los puntajes de riesgo (0–100) con justificaciones claras son técnicamente viables. Va-
+lidado: el modelo genera puntajes numéricos, acompañados de explicaciones clínicas tex-
+tuales, que el auditor puede evaluar.
+
+       Sin embargo, Capstone 1 dejó abiertas preguntas sobre la calibración del modelo
+(tendencia a sobrevalorar el riesgo), la integración con las reglas contractuales específicas
+del plan y la protección de los datos personales en el flujo de procesamiento. Estas tres
+brechas definieron la
+
+       agenda técnica de Capstone 2: un benchmark multimodelo para encontrar la cali-
+bración óptima, un motor de reglas contractuales que complementara al LLM y un módulo
+de anonimización que impidiera que datos personales llegaran al modelo de lenguaje.
+
+
+
+5.2   Supuestos no validados
+
+
+       Al inicio de Capstone 2, tres supuestos permanecían sin validar:
+
+
+
+
+                   Tabla 5.1. Supuestos no validados al inicio de Capstone 2
+
+
+
+       El primer supuesto se abordó parcialmente mediante la normalización de los datos
+crudos a un formato JSON estandarizado, simulando la capa de ingesta que existiría en
+producción. El segundo motivó el énfasis en la explicabilidad y la transparencia de las
+justificaciones, reconociendo que la tasa de fast-track solo genera valor si el auditor confía
+en las recomendaciones que recibe. El tercero se mitigó mediante la construcción de un
+
+
+                                                                                           25
+Golden Set: un conjunto de 17 liquidaciones hospitalarias curadas y anotadas manualmente
+que sirve como referencia para evaluar la calidad de las recomendaciones del sistema.
+
+
+
+5.3   Matriz de riesgos
+
+
+
+
+                      Tabla 5.2. Matriz inicial de riesgos del proyecto
+
+
+
+
+                                                                                        26
+                                   CAPÍTULO VI
+
+                           DEFINICIÓN DEL MVP
+
+
+
+6.1   Decisión de negocio
+
+
+        El MVP aborda una decisión operativa concreta: dado un lote de liquidaciones hos-
+pitalarias, clasificar cada una según su nivel de riesgo clínico-económico para determinar
+si califica para el carril de fast-track (bajo riesgo, validación rápida del auditor) o si requie-
+re auditoría profunda.
+
+        En la práctica, se busca pasar de un proceso predominantemente manual a un mo-
+delo de “revisar solo lo que realmente importa”. Esto no implica eliminar al auditor, sino
+transformar su rol: de revisor exhaustivo de cada expediente a supervisor estratégico de
+un flujo priorizado por inteligencia artificial. La mayor parte del tiempo que actualmente
+dedica a casos rutinarios puede liberarse para el análisis de inconsistencias complejas, la
+detección de patrones de fraude y la negociación con la red prestadora.
+
+
+
+6.2   Usuario del MVP
+
+
+
+
+                         Tabla 6.1. Perfil del usuario operativo del MVP
+       El auditor médico no es un usuario técnico. No interactúa con APIs ni con código.
+Requiere una interfaz visual que le presente la información con claridad, con la justifica-
+ción clínica como elemento central de la pantalla y con acciones de aprobación o rechazo
+accesibles en pocos clics.
+
+
+
+6.3   Flujo end-to-end
+
+
+       El flujo mínimo del MVP comprende cinco pasos secuenciales:
+
+1. Ingesta y estandarización. El sistema recibe los datos de liquidaciones desde
+ERPs/TEDEF y los estandariza en el formato interno basado en FHIR Claim y en CIE-10
+(diagnósticos). En el MVP, la entrada consiste en archivos JSON con la estructura
+normalizada. Los casos cuya información es insuficiente o estructuralmente inválida se
+rechazan técnicamente mediante validación con Pydantic v2 y se derivan al flujo manual
+sin pasar por el modelo.
+
+2. Evaluación Fase 1 (reglas contractuales). Un motor determinístico verifica la elegibi-
+lidad del paciente, las exclusiones generales por diagnóstico, las exclusiones de medica-
+mentos y dispositivos y los porcentajes de cobertura según el plan contratado. No requiere
+IA.
+
+3. Evaluación Fase 2 (IA clínica). Un LLM analiza la consistencia clínica del expediente en
+cinco dimensiones: diagnóstico vs. procedimiento, diagnóstico vs. especialidad, protocolo
+farmacológico, materiales e insumos, y generación de hallazgos. Produce un puntaje de
+riesgo (0–100) con justificación textual.
+
+4. Clasificación y decisión. El motor de decisión combina los resultados de Fase 1 y Fase 2
+para asignar una de cuatro categorías: FAST TRACK, REVISION RAPIDA, AUDITORIA
+COMPLETA o RECHAZO ADMINISTRATIVO.
+
+
+
+                                                                                        28
+5. Visualización y decisión del auditor. El auditor accede a la interfaz web, revisa la lista de
+liquidaciones evaluadas con sus puntajes de riesgo, explora los hallazgos y justificaciones,
+y valida o rechaza las recomendaciones del sistema. En los casos fast-track, esta validación
+toma aproximadamente 1 minuto.
+
+
+
+6.4   Alcance funcional y no funcional
+
+
+
+
+                          Tabla 6.2. Requisitos funcionales del MVP
+
+
+
+
+                         Tabla 6.3. Requisitos no funcionales del MVP
+
+
+
+
+                                                                                             29
+6.5      Criterios de éxito cuantitativos
+
+
+          El MVP se considera exitoso si cumple con la métrica principal: una tasa de fast-
+track del 50– 60 % de las liquidaciones hospitalarias, lo que implica que esa proporción
+de casos es evaluada por el sistema y validada por el auditor en aproximadamente 1 minu-
+to. Las métricas secundarias (control de falsos positivos y reducción del tiempo por lote
+en al menos un 40 %) validan la calidad de las recomendaciones y el impacto operativo
+agregado.
+
+
+
+6.6      Exclusiones explícitas
+
+
+          Para mantener un alcance realizable, el MVP excluye:
+
+          En casos de riesgo medio o alto, la decisión final es del auditor. El sistema reco-
+mienda, no resuelve.
+
+          La meta de fast-track es el 50–60 % del lote, correspondiente a la carga rutinaria.
+No se pretende resolver el 100 %.
+
+          La estandarización es interna al pipeline. Los datos de origen (ERPs) no se modi-
+fican.
+
+          Se implementan protocolos básicos de anonimización y cifrado. Una suite de ci-
+berseguridad avanzada queda fuera del alcance del MVP.
+
+          El sistema asiste al auditor, no lo sustituye. El criterio clínico sigue siendo humano,
+en cumplimiento con los requisitos de supervisión de la Ley No 31814.
+
+
+
+
+                                                                                              30
+                                CAPÍTULO VII
+
+              ARQUITECTURA DE LA SOLUCIÓN
+
+
+
+7.1   Visión general: pipeline de dos fases
+
+
+       La arquitectura de NexusCare cambió respecto al prototipo de Capstone 1. El pro-
+totipo utilizaba un único modelo (MedGemma-4B) para analizar la liquidación completa.
+El sistema de Capstone 2 separa el procesamiento en dos fases independientes:
+
+       Fase 1: motor de reglas contractuales determinístico (sin IA). Verifica elegibilidad,
+exclusiones y coberturas contra la configuración del plan de salud.
+
+       Fase 2: evaluación clínica con LLM. Analiza la consistencia clínica del expediente
+y genera puntajes de riesgo con justificaciones textuales.
+
+       ¿Por qué separar en dos fases? Porque la Fase 1 filtra cerca del 25 % de los ítems
+de cada liquidación como excluidos o condicionales, sin invocar ningún modelo de len-
+guaje, lo que reduce el costo de API y la latencia. Además, una exclusión contractual es
+determinista y verificable, a diferencia de una inferencia probabilística del LLM.
+
+       El pipeline completo sigue un flujo secuencial: Anonimización, Fase 1, Routing,
+Fase 2, Decisión. Lo orquesta el módulo orchestrator.py, que gestiona errores, logging y
+estimación de costos.
+Figura 7.1. Workflow del sistema: flujo de cinco fases desde la liquidación hasta la deci-
+                                   sión del auditor.
+
+
+
+
+                                                                                             32
+Figura 7.2. Diagrama C4 de contexto del problema: nivel 1.
+
+
+
+
+  Figura 7.3. Diagrama C4 de contenedores del sistema.
+
+                                                             33
+7.2   Ingesta y normalización
+
+
+       Las liquidaciones llegan como archivos JSON individuales, cada uno representan-
+do un caso hospitalario completo. La estructura incluye:
+
+       Datos del paciente: nombre, edad, sexo (los dos últimos se preservan como quasi-
+identificadores necesarios para la validación clínica CIE-10).
+
+       Datos del prestador: nombre del médico tratante (anonimizado) y especialidad.
+
+       Diagnóstico: código CIE-10 y descripción textual.
+
+       Servicios: organizados en siete categorías (farmacia, procedimientos, clínica, ima-
+genología, consultas, laboratorio, otros servicios), cada una con una lista de ítems que
+incluyen código, descripción y costo.
+
+       La validación estructural se realiza mediante modelos Pydantic v2, definidos en
+nexuscare/compliance/models.py.
+
+       La clase Claim y sus modelos anidados garantizan que toda liquidación procesa-
+da cumpla con el esquema esperado. Los principales modelos involucrados son Patient,
+Provider, Diagnosis, Services, ServiceCategory y ServiceItem.
+
+       Los costos se almacenan como strings para preservar el formato original y se con-
+vierten a float bajo demanda mediante la propiedad cost float de ServiceItem.
+
+       La fuente de datos del MVP consiste en 101 liquidaciones hospitalarias del Q3
+2025 de MediVida, complementadas con registros proxy de pacientes (visitas únicas y
+múltiples) indexados por un catálogo maestro (patient index.json).
+
+
+
+
+                                                                                       34
+7.3   Identity Vault: protección de datos personales
+
+
+       Antes de que cualquier dato llegue al LLM, el sistema ejecuta un proceso de ano-
+nimización que implementa los principios de privacy by design establecidos en Capstone
+1 (Hurtado & Linares, 2025), en cumplimiento con la Ley No 29733 (Congreso de la Re-
+pública del Perú, 2011) y alineado con los principios de minimización de datos del GDPR
+(European Parliament, 2024).
+
+       El módulo Identity Vault (nexuscare/vault/) comprende cuatro componentes:
+
+       Anonymizer (anonymizer.py) Reemplaza los nombres de paciente y médico con
+identificadores UUID v4. El proceso es idempotente: la misma persona siempre recibe
+el mismo UUID, lo que permite correlacionar liquidaciones de un mismo paciente sin
+exponer su identidad. Los datos clínicos (diagnósticos, medicamentos, costos) no se ano-
+nimizan porque son necesarios para el análisis de consistencia.
+
+       Vault Store (store.py) Almacenamiento persistente cifrado para los mapeos PII-
+UUID. Utiliza AES-256-GCM con derivación de clave mediante SHA-256 sobre la cla-
+ve de entorno (VAULT KEY). Mantiene dos índices: anon id hacia PIIRecord (para re-
+identificación) y hash del lookup key hacia anon id (para anonimización idempotente).
+
+       Scanner (scanner.py) Detector de fugas de PII post-anonimización. Busca patrones
+específicos del contexto peruano: DNI (8 dígitos), números CMP (Colegio Médico del
+Perú), números
+
+       telefónicos con prefijo +51, y direcciones de correo electrónico. Los UUID se ex-
+cluyen del escaneo porque son valores esperados en datos anonimizados.
+
+       Reidentifier (reidentifier.py) Servicio de re-identificación con control de acceso
+basado en roles. Solo los roles AUDITOR y ADMIN pueden resolver un UUID a la identi-
+dad real. Cada operación de re-identificación se registra en un log de auditoría inmutable
+(append-only ), cumpliendo el requisito de trazabilidad (RF5).
+                                                                                        35
+       El flujo completo es: Claim(PII) → Anonymize → Claim(anon) → LLM → Re-
+sult → Re-identify → Auditor. En ningún momento el LLM procesa datos que permitan
+identificar a un paciente o médico real.
+
+
+
+7.4   Fase 1: motor de reglas contractuales
+
+
+       Fase 1 implementa la verificación determinística de cumplimiento contractual. Es
+la primera línea de filtrado y opera sin ningún componente de IA.
+
+       El motor está implementado en nexuscare/compliance/ y ejecuta cinco verificacio-
+nes secuenciales sobre cada liquidación:
+
+1. Elegibilidad por edad Verifica que la edad del paciente se encuentre dentro del rango
+de ingreso permitido por el plan. Para MediVida Más 65, el rango es de 65 a 100 años;
+para MediVida Premium, de 0 a 64 años. Un paciente fuera del rango de su plan gene-
+ra un finding EXCLUDED en la categoría eligibility y el claim se envía a AUDITORIA
+COMPLETA, sin pasar por el LLM.
+
+2. Validación de diagnóstico CIE-10 Consulta un catálogo CIE-10 embebido para verificar:
+(a) que el código diagnóstico existe, (b) que es consistente con el sexo del paciente, y (c)
+que es consistente con el rango de edad. Este módulo (cie10.py) realiza una búsqueda fuzzy
+para manejar variaciones en la codificación.
+
+3. Exclusiones por diagnóstico Evalúa 21 exclusiones generales definidas en la configura-
+ción del plan, cada una con sus prefijos CIE-10 asociados. Las categorías incluyen: enfer-
+medades congénitas (prefijo Q), accidentes laborales (Z57), deportes de riesgo (V, W, X,
+Y), abuso de
+
+       sustancias (F10–F19, T40–T51), salud mental (F), cirugía estética y tratamientos
+de obesidad, entre otras. Algunas exclusiones tienen excepciones textuales que se preser-
+van como findings de tipo REVIEW NEEDED.
+                                                                                         36
+4. Exclusiones de medicamentos Verifica cada ítem de la farmacia contra 25 categorías
+de medicamentos excluidos (anticonceptivos, vitaminas, psicotrópicos, hormonoterapia,
+etc.) mediante keyword matching con normalización de texto en español. También evalúa
+8 medicamentos condicionales cuya cobertura depende del diagnóstico.
+
+5. Exclusiones de dispositivos e implantes Verifica 26 keywords de exclusión (prótesis,
+stents, marcapasos, etc.) frente a 37 keywords de excepción (stents coronarios, placas y
+tornillos de traumatología, válvulas de derivación, etc.). La lógica distingue entre insumos
+médicos básicos y dispositivos que requieren verificación contractual.
+
+       La normalización de texto en español (matchers.py) maneja tildes, caracteres espe-
+ciales y mayúsculas de forma consistente. Esto es necesario porque las descripciones de
+medicamentos e insumos en las liquidaciones peruanas emplean convenciones de escritura
+heterogéneas.
+
+       Las configuraciones de plan se extraen de los contratos de seguro reales en formato
+PDF utilizando un proceso semiautomático: un LLM genera una primera versión JSON a
+partir de secciones específicas del contrato (extract plan rules.py), y un auditor humano
+valida y corrige el resultado (validate extraction.py). Los archivos JSON resultantes se
+almacenan en nexuscare/config/plans/ y se versionan junto con el código.
+
+       Routing de Fase 1 El resultado de Fase 1 determina el siguiente paso:
+
+       Si el paciente no es elegible: AUDITORIA COMPLETA (omite LLM).
+
+       Si el 70 % o más de los ítems están excluidos: RECHAZO ADMINISTRATIVO
+(omite LLM).
+
+       En cualquier otro caso: TO LAYER2 (envía a Fase 2 para evaluación clínica).
+
+       Este routing permite ahorrar el costo del LLM cuando ya existe una determinación
+contractual clara.
+
+
+                                                                                         37
+7.5   Fase 2: evaluación clínica con LLM
+
+
+       La Fase 2 es el componente de inteligencia artificial del pipeline. Evalúa la consis-
+tencia clínica del expediente y asigna un puntaje de riesgo explicable.
+
+       Evolución desde Capstone 1 El prototipo usaba MedGemma-4B, un modelo de fun-
+dación médica de Google DeepMind (Google, 2025), desplegado localmente. Los resulta-
+dos fueron alentadores (93 % de parsing exitoso), pero el modelo presentaba limitaciones:
+un contexto de 8,192 tokens insuficiente para liquidaciones con más de 100 ítems, y una
+tendencia a producir análisis superficiales en casos complejos.
+
+       Para Capstone 2, se realizó un benchmark comparativo de cinco modelos sobre las
+101 liquidaciones del dataset (505 evaluaciones totales):
+
+
+
+
+                 Tabla 7.1. Benchmark comparativo de modelos para Fase 2
+
+
+
+       La desviación estándar del puntaje (sigma score) mide la capacidad de discrimina-
+ción del modelo: un sigma alto indica que el modelo diferencia entre casos de bajo y alto
+riesgo, mientras que un sigma bajo indica que asigna puntajes similares a todos los casos.
+Claude Sonnet 4 presentó la mayor discriminación (σ = 20.1), con una distribución equi-
+librada entre las tres bandas de riesgo (25 % bajo / 45 % medio / 31 % alto). GPT-5.4, con
+σ = 8.8, asignó puntajes altos a prácticamente todas las liquidaciones (0 % de fast-track ),
+lo que lo hace inviable para el caso de uso.
+
+
+
+
+                                                                                         38
+          Claude Opus 4.6 generó el análisis clínico más profundo (6.8 hallazgos por caso,
+682 totales), pero a un costo 10 veces mayor que Sonnet y con una tasa de fast-track del
+3.1 %, lo que refleja una tendencia a sobrevalorar el riesgo.
+
+          Estos resultados motivaron la adopción de una estrategia escalonada, implementa-
+da en nexuscare/pipeline/esca
+
+          Paso 1: Claude Sonnet 4 filtra el 100 % de las liquidaciones (∼17 segundos, $0.028
+por caso).
+
+          Paso 2: Se escala a Claude Opus 4.6 el ∼33 % de los casos, según cuatro criterios:
+(a) puntaje de Sonnet >45, (b) hallazgo de alta severidad de tipo inconsistencia clínica o
+sobrecosto, (c) costo total de la liquidación >S/5,000 con ítems en revisión, o (d) error de
+parsing en la respuesta de Sonnet.
+
+          Fallback: si Opus falla (error de parseo o timeout), el sistema revierte al resultado
+de Sonnet.
+
+          El costo por liquidación con la estrategia escalonada es de ∼$0.12, un 57 % inferior
+al costo de usar Opus en todos los casos ($0.278). Para un lote de 101 liquidaciones, el
+costo total de API fue de $12.00, frente a $28.08 con Opus en exclusiva.
+
+          Ejemplo ilustrativo del benchmark La liquidación H0710170 (obstrucción del con-
+ducto biliar, K83.1, 118 ítems, gastroenterología) fue evaluada por los cinco modelos.
+Claude Sonnet le asignó un puntaje de 70 e identificó 3 hallazgos. Claude Opus le asignó
+75 puntos con 7 hallazgos, detectando la duplicidad terapéutica de inhibidores de bomba
+de protones y un patrón de reversiones en farmacia que sugiere problemas de control de in-
+ventario. Todos coincidieron en la inconsistencia principal: material endoscópico presente
+sin un procedimiento endoscópico registrado. Esta convergencia en el hallazgo principal,
+con divergencia en la profundidad del análisis complementario, justifica la estrategia esca-
+lonada.
+
+
+                                                                                            39
+       Dimensiones de evaluación clínica El LLM evalúa cada liquidación en cinco di-
+mensiones, definidas en el prompt de auditoría (nexuscare/benchmark/prompts.py):
+
+1. Consistencia diagnóstico-procedimiento.
+
+2. Consistencia diagnóstico-especialidad.
+
+3. Protocolo farmacológico.
+
+4. Materiales e insumos.
+
+5. Puntaje de riesgo (0–100).
+
+       La escala de producción utiliza cuatro bandas calibradas con el Golden Set: 0–25
+muy bajo, 26–45 bajo, 46–70 medio, 71–100 alto. Los hallazgos se tipifican en cuatro
+categorías: Inconsistencia Clínica, Omisión, Sobrecosto y Duplicado. Cada hallazgo lleva
+una severidad (alta, media, baja).
+
+       La salida del LLM se estructura como JSON con campos tipados, lo que permite
+al pipeline procesarla de forma programática. El módulo de parsing (extract json en run
+benchmark.py) maneja respuestas con bloques de código en Markdown. Cuando el parsing
+falla, el caso se marca como parse error y se escala a Opus o se deriva a auditoría completa.
+
+
+
+7.6   Motor de decisión y routing
+
+
+       El módulo nexuscare/pipeline/decision.py combina los resultados de Fase 1 y Fase
+2 para generar la recomendación final. Las reglas de decisión son:
+
+
+
+
+                                                                                         40
+                     Tabla 7.2. Reglas de decisión del pipeline integrado
+
+
+
+       Los umbrales (45, 70) se calibraron utilizando el Golden Set de 17 liquidaciones cu-
+radas. La calibración apunta a una tasa de fast-track del 65 %, confirmada por la ejecución
+del pipeline integrado. Los tres mecanismos de calibración son:
+
+1. Pre-filtrado de Fase 1: la eliminación de exclusiones contractuales antes del LLM reduce
+los falsos positivos del modelo.
+
+2. Umbrales recalibrados: los puntos de corte se ajustan con el Golden Set para maximizar
+la tasa de fast-track sin degradar la detección de casos de alto riesgo.
+
+3. Prompts anti-sesgo: instrucciones explícitas al LLM para evitar la sobre-penalización
+de liquidaciones rutinarias.
+
+
+
+7.7   Front-end del auditor
+
+
+       La interfaz de validación del auditor se implementó como una aplicación de página
+única (SPA) utilizando React 19, TypeScript 5.9, Vite 8, Tailwind CSS 4 y React Router
+7.
+
+       La aplicación consta de tres vistas principales:
+
+       ClaimsList (Dashboard) Tabla interactiva que muestra todas las liquidaciones del
+lote evaluado, con columnas para: ID del expediente, paciente (anonimizado), diagnóstico,
+
+
+
+                                                                                        41
+especialidad, monto total, puntaje de riesgo, estado de la recomendación, y fecha. Soporta
+búsqueda por texto libre, filtros por estado y ordenamiento por cualquier columna.
+
+       ClaimDetail (Revisión) Vista de detalle de una liquidación individual. Presenta
+los datos del paciente y diagnóstico, los resultados de Fase 1, los resultados de Fase 2 y
+la tabla completa de ítems facturados con indicación visual de los que fueron marcados
+como cuestionables. Incluye botones de Aprobar y Rechazar con diálogo de confirmación,
+implementando el override humano requerido por RF8.
+
+       PipelineView Visualización interactiva del pipeline de cinco fases, con simulación
+paso a paso que permite al auditor, o a un stakeholder no técnico, comprender el flujo de
+procesamiento de una liquidación.
+
+       Toda la interfaz utiliza texto en español y formato de moneda y fechas del locale
+es-PE. Los componentes reutilizables (FindingCard, RiskBadge, StatusBadge) encapsulan
+la lógica de presentación visual de hallazgos, puntajes y estados.
+
+       Interfaz del auditor: vista de detalle de una liquidación (ClaimDetail).
+
+
+
+
+                                                                                       42
+Figura 7.4. Interfaz del auditor: vista detallada de una liquidación.
+
+
+
+
+                                                                        43
+7.8   Stack tecnológico
+
+
+
+
+                          Tabla 7.3. Stack tecnológico de NexusCare
+
+
+
+7.9   Decisiones de diseño y trade-offs
+
+
+1. Arquitectura de dos fases vs. LLM único Fase 1 (reglas) + Fase 2 (IA) permite que las ve-
+rificaciones contractuales sean determinísticas, reproducibles y auditables. El trade-off es
+la complejidad adicional de mantener dos subsistemas sincronizados y las configuraciones
+de plan actualizadas.
+
+2. Estrategia escalonada de modelos vs. modelo único La combinación Sonnet (screening)
++ Opus (análisis profundo) reduce el costo en un 57 % respecto a usar Opus en todos los
+casos, con una pérdida marginal en la profundidad de análisis en los casos de bajo riesgo.
+El trade-off radica en la complejidad de la lógica de escalación.
+
+3. Extracción de reglas de plan mediante LLM + validación humana Los contratos de
+seguro son documentos PDF complejos, con lenguaje legal y estructuras variadas entre
+los planes. La extracción automatizada mediante LLM reduce el tiempo de configuración
+de días a horas, pero requiere validación humana para garantizar la precisión.
+                                                                                         44
+4. Human-in-the-loop obligatorio El sistema nunca toma la decisión final en casos de riesgo
+medio o alto. La contrapartida es clara: la ganancia de eficiencia queda acotada al segmento
+de bajo riesgo.
+
+5. Privacy by design: PII nunca llega al LLM Los datos personales se anonimizan antes de
+enviar cualquier información al modelo y se reidentifican únicamente en el entorno local
+del auditor, con control de acceso y registro de auditoría.
+
+
+
+7.10   Resultados preliminares y proyecciones
+
+
+       Los resultados del benchmark y las pruebas con el pipeline integrado permiten
+estimar el desempeño proyectado del sistema en producción.
+
+       Cobertura de procesamiento El pipeline procesó exitosamente las 101 liquidacio-
+nes del dataset sin errores fatales. La validación estructural con Pydantic v2 no rechazó
+ningún caso. Los 190 tests automatizados cubren el motor de reglas, el pipeline integrado,
+la lógica de escalación, el vault de identidad, el Golden Set y la integración end-to-end.
+
+       Distribución de decisiones proyectada Con los umbrales calibrados y el pre-filtrado
+de Fase 1, la distribución proyectada para un lote típico de 101 liquidaciones hospitalarias
+es:
+
+
+
+
+                  Tabla 7.4. Distribución proyectada de decisiones por categoría
+
+
+
+       Con estos números, el tiempo total del lote se proyecta en 16 horas frente a las 75.8
+horas del proceso manual, una reducción del 79 %.
+
+                                                                                         45
+       Estimación de costos operativos El costo de API por lote de 101 liquidaciones, con
+la estrategia escalonada, fue de $12.00. Es menos del 0.01 % del valor promedio de un lote
+hospitalario.
+
+       Limitaciones observadas La principal limitación identificada es la tendencia del
+LLM a generar hallazgos sobre inconsistencias documentales que pueden ser normales en
+el flujo operativo de la IPRESS pero que el modelo interpreta como señales de riesgo. Otra
+limitación es la dependencia de APIs externas para el componente de Fase 2.
+
+
+
+
+                                                                                       46
+                                CAPÍTULO VIII
+
+                  DESARROLLO Y CONSTRUCCIÓN
+
+
+
+8.1   Cronología de desarrollo
+
+
+        El desarrollo de NexusCare abarca dos ciclos académicos con objetivos y entrega-
+bles distintos.
+
+        Capstone 1 (agosto–diciembre 2025) produjo un prototipo de concepto basado en
+MedGemma- 4B, un modelo de fundación médica de 4 mil millones de parámetros desa-
+rrollado por Google DeepMind. El modelo se desplegó localmente y procesó 101 liquida-
+ciones hospitalarias con una tasa de parsing exitoso del 93 % (7 casos fallaron por límite de
+contexto). El prototipo validó parcialmente tres hipótesis técnicas: que un LLM puede ge-
+nerar análisis clínicos estructurados sobre liquidaciones, que el tiempo de procesamiento
+se reduce de 45 a menos de 5 minutos por caso, y que la generación de puntajes de riesgo
+con justificaciones textuales es técnicamente viable. Sin embargo, el prototipo dejó abier-
+tas tres brechas que definieron la hoja de ruta de Capstone 2: la calibración del modelo, la
+ausencia de verificación contractual y la falta de protección de datos personales.
+
+        Capstone 2 (enero–marzo 2026) reconstruyó el sistema desde la arquitectura. El
+cambio más significativo fue abandonar MedGemma-4B como modelo único y adoptar
+una arquitectura de dos fases con múltiples modelos. La primera decisión fue separar la
+verificación contractual (Fase 1) del análisis clínico (Fase 2), motivada por la observación
+de que MedGemma confundía exclusiones contractuales con inconsistencias clínicas. La
+segunda fue realizar un benchmark comparativo de cinco modelos para seleccionar la com-
+binación óptima basándose en datos, no en supuestos. La tercera fue construir un Identity
+Vault para anonimización de PII antes de enviar datos al LLM, en cumplimiento con la
+Ley 29733.
+
+       La cronología del desarrollo fue la siguiente. En enero, el foco estuvo en el motor
+de reglas contractuales (nexuscare/compliance/) y en la extracción semiautomática de con-
+figuraciones de plan a partir de los contratos en formato PDF de MediVida. Febrero fue el
+mes más intenso: se ejecutó el benchmark de cinco modelos (505 evaluaciones), se diseñó
+la estrategia escalonada
+
+       Sonnet+Opus y se implementó el pipeline integrado con orquestador, escalación y
+motor de decisión. El último mes se dedicó a la calibración (el Golden Set de 17 liquida-
+ciones, los umbrales de decisión) y a la interfaz React del auditor.
+
+       Dos decisiones de diseño fueron descartadas durante el proceso. La primera fue
+el despliegue de MedGemma 27B en un endpoint de Vertex AI con GPU A100: aunque
+funcionó técnicamente, el modelo demostró menor capacidad de discriminación que Clau-
+de Sonnet y un throughput inferior, con un costo comparable. El endpoint se desmanteló
+tras el benchmark. La segunda fue un módulo de detección de fraude basado en patrones
+de prescripción por médico, que requería acceso a datos de identidad del médico tratante,
+incompatible con la decisión de privacy by design adoptada en la sección 7.3.
+
+       La siguiente tabla resume la cronología de iteraciones:
+
+
+
+
+                     Tabla 8.1. Cronología de iteraciones del desarrollo
+
+
+
+                                                                                       48
+8.2   Dataset y preparación
+
+
+       El dataset del MVP consiste en 101 liquidaciones hospitalarias del Q3 2025
+de MediVida, almacenadas como archivos JSON individuales en data/hospitalization
+q3 2025/. Los datos originales provienen de la plataforma TEDEF en formato Parquet
+(cabecera.parquet, detalle all.parquet), que se transformaron a JSON normalizado durante
+Capstone 1. Cada liquidación contiene entre 5 y 368 ítems de servicio, con un promedio
+de S/21,840 por caso.
+
+       La anonimización se implementó en dos niveles. A nivel de dataset, el nombre de
+la IAFAS fue sustituido por un seudónimo (MediVida) desde la fase de preparación de
+datos. A nivel de pipeline, el Identity Vault sustituye los nombres de pacientes y médicos
+por identificadores UUID
+
+       v4 antes de cada invocación al LLM, manteniendo la edad y el sexo como cuasi-
+identificadores requeridos para la validación clínica de códigos CIE-10.
+
+       Los registros proxy de pacientes (data/proxy records q3 2025/) complementan las
+liquidaciones con información de contexto clínico: visitas previas del paciente (single visit/
+para pacientes con una sola atención, multi visit/ para pacientes con historial), indexados
+mediante patient index.json. Estos registros permiten al sistema evaluar si una hospitaliza-
+ción es un evento aislado o parte de una condición crónica, lo que influye en la evaluación
+de consistencia clínica.
+
+
+
+8.3   Construcción del Golden Set
+
+
+       El Golden Set es un conjunto curado de 17 liquidaciones con clasificaciones es-
+peradas, definido en nexuscare/pipeline/golden set.py. Su función es doble: regresión y
+calibración de umbrales. Es importante notar que el Golden Set no constituye un conjunto
+de validación independiente: los umbrales de decisión (45, 70) se calibraron usando estos
+                                                                                           49
+mismos 17 casos, por lo que su uso posterior para evaluar esos umbrales tiene circularidad
+inherente. Su valor radica en la regresión continua.
+
+       La selección de las 17 liquidaciones siguió criterios deliberados para cubrir los
+escenarios representativos del pipeline:
+
+       10 candidatas a fast-track Liquidaciones rutinarias con cobertura completa (>95 %),
+pacientes elegibles y diagnósticos consistentes con los servicios facturados. Se selecciona-
+ron para cubrir diversidad de especialidades, incluyendo traumatología, medicina interna,
+cirugía general, pediatría, gastroenterología, neumología y nefrología.
+
+       2 casos complejos pero consistentes Liquidaciones con alto número de ítems donde
+la expectativa es FAST TRACK o REVISION RAPIDA. Estos casos prueban que el LLM
+no penaliza por volumen cuando la consistencia clínica es adecuada.
+
+       2 casos con ítems condicionales Liquidaciones de urología con medicamentos cuya
+cobertura depende del diagnóstico. Validan que el routing de ítems condicionales funciona
+correctamente.
+
+       3 casos geriátricos de alta complejidad Pacientes de 81, 89 y 99 años en el plan Más
+65. Estos casos validan que el sistema no penaliza por edad cuando la cobertura contractual
+es completa.
+
+       Las clasificaciones esperadas de las 17 liquidaciones fueron validadas por un audi-
+tor médico con experiencia en liquidaciones hospitalarias. Una limitación del Golden Set
+es que las clasificaciones fueron definidas por un único auditor, por lo que no es posible
+calcular acuerdo interevaluador.
+
+       Cada entrada del Golden Set especifica el routing esperado de Fase 1, el estado
+de elegibilidad, el ratio mínimo de cobertura, el puntaje máximo aceptable de Fase 2 y la
+decisión final esperada. Los tests automatizados en tests/test golden set.py verifican estas
+expectativas.
+
+                                                                                         50
+       La composición completa del Golden Set se detalla en la siguiente tabla:
+
+
+
+
+                             Tabla 8.2. Composición del Golden Set
+
+
+
+8.4   Proceso de benchmark
+
+
+       El benchmark se ejecutó mediante el módulo nexuscare/benchmark/run bench-
+mark.py. Las 101 liquidaciones fueron evaluadas por los cinco modelos, generando 505
+evaluaciones individuales.
+
+       La ejecución se paralelizó por modelo dentro de cada liquidación: para cada caso,
+los cinco modelos se invocaron simultáneamente mediante ThreadPoolExecutor(max wor-
+kers=5), donde cada worker ejecuta una llamada HTTP independiente a la API del modelo
+correspondiente. La paralelización redujo el tiempo total del benchmark de aproximada-
+mente 14 horas en una ejecución secuencial a cerca de 4 horas.
+
+
+
+
+                                                                                     51
+          Los parámetros de ejecución fueron: temperatura 0.1 para todos los modelos, max
+tokens de 4,096 para los modelos de API y 2,048 para MedGemma, limitado por su con-
+texto de 8,192 tokens. MedGemma 27B se ejecutó en un endpoint de Vertex AI con GPU
+A100 de 80 GB, utilizando el formato condensado del prompt.
+
+          El parsing de respuestas utilizó una cadena de fallback implementada en extract
+json(): primero intenta un parsing JSON directo; si falla, elimina las cercas de Markdown;
+si eso también falla, busca el primer objeto JSON válido mediante regex. Los resultados se
+almacenaron en un JSON consolidado con metadatos de ejecución y en archivos de texto
+individuales por claim y modelo para inspección manual.
+
+          La configuración por modelo se resume en la siguiente tabla:
+
+
+
+
+                       Tabla 8.3. Configuración del benchmark por modelo
+
+
+
+8.5      Iteraciones de prompt engineering
+
+
+          El diseño del prompt clínico evolucionó entre tres versiones con diferencias sustan-
+tivas.
+
+          Prompt del benchmark Definía al modelo como “auditor médico experto en segu-
+ros de salud en Perú” y solicitaba un informe JSON con cinco secciones: consistencia
+diagnóstico-procedimiento, consistencia diagnóstico-especialidad, protocolo farmacológi-
+co, materiales e insumos, y hallazgos críticos. La escala de riesgo original del benchmark
+usaba tres bandas: 0–30 (bajo), 31–60 (medio), 61–100 (alto). El prompt instruye respon-
+der solamente con el JSON, lo que redujo los errores de parsing a menos del 3 %.
+
+                                                                                           52
+       Prompt de producción Incorpora tres cambios respecto al prompt del benchmark.
+Primero, la instrucción anti-sesgo más relevante del sistema: “La verificación de cobertura
+contractual ya fue realizada por el sistema de reglas (Capa 1). Tu rol es exclusivamente la
+evaluación clínica.” Segundo, se inyecta el contexto de Fase 1 directamente en el prompt:
+estado de elegibilidad, porcentaje de cobertura, número de exclusiones detectadas y detalle
+de cada exclusión. Tercero, la escala de riesgo se recalibró a cuatro bandas: 0–25 (muy
+bajo), 26–45 (bajo), 46–70 (medio), 71–100 (alto).
+
+       Las guías de calibración del prompt de producción contienen instrucciones nega-
+tivas explícitas para evitar penalizar complejidad clínica inherente, volumen de ítems y
+medicamentos genéricos estándar cuando son clínicamente consistentes.
+
+       Prompt de Opus para escalación Define al modelo como “auditor médico SENIOR”
+y le proporciona el resultado previo de Sonnet. La instrucción clave es que puede confirmar,
+ajustar o descartar los hallazgos de Sonnet. Este diseño convierte a Opus en un revisor de
+segundo nivel, no en un evaluador independiente que repite el análisis desde cero.
+
+
+
+
+                                                                                         53
+                                 CAPÍTULO IX
+
+           MÉTRICA PRINCIPAL DE VALIDACIÓN
+
+
+
+9.1   Definición
+
+
+       La métrica principal del MVP es la tasa de fast-track: el porcentaje de liquidacio-
+nes hospitalarias que el sistema evalúa, clasifica como de bajo riesgo y presenta al auditor
+con una recomendación fundamentada que este puede validar en aproximadamente 1 mi-
+nuto. La meta es alcanzar una tasa del 50–60 %. El rango de 50–60 % representa la banda
+de operación óptima estimada. Una tasa inferior al 50 % indicaría un impacto operativo
+insuficiente. Una tasa superior al 60 % pero inferior al 75 % es aceptable si no se observa
+un incremento en la tasa de falsos negativos, ya que implica que el sistema está liberando
+más capacidad del auditor de la inicialmente prevista.
+
+       Esta métrica refleja directamente la propuesta de valor de NexusCare. Una tasa de
+fast-track del 55 % significa que, de un lote de 101 liquidaciones, aproximadamente 56 se
+resuelven en alrededor de 1 minuto cada una, lo que libera al auditor para concentrarse
+en los casos restantes que requieren un análisis profundo. El impacto operativo se mide a
+nivel de lote porque así opera el auditor: el valor se materializa cuando un lote completo
+se cierra más rápido, no cuando un caso aislado se procesa en menos tiempo.
+
+       La línea base se estableció durante Capstone 1: un lote de 101 liquidaciones hospi-
+talarias requiere 75.8 horas de trabajo manual, aproximadamente 45 minutos por caso. La
+cifra de 45 minutos proviene de entrevistas con auditores médicos de MediVida durante
+Capstone 1, quienes reportaron un rango de 30 a 45 minutos para las liquidaciones hos-
+pitalarias, según la complejidad del caso. Se adoptó el extremo superior como supuesto
+conservador; no se midió mediante un estudio formal de tiempo y movimiento. Con una
+tasa de fast-track del 55–60 %, el tiempo total por lote se reduce a un rango estimado de
+28 a 35 horas, equivalente a una reducción del 40–60 %, según el tiempo efectivo que el
+auditor dedique a los casos de revisión rápida y a la auditoría completa.
+
+
+
+9.2   Métricas secundarias
+
+
+       Tasa de falsos negativos (umbral máximo: 2 %) Mide el porcentaje de liquidaciones
+de riesgo medio o alto que el sistema clasifica incorrectamente como de bajo riesgo y
+recomienda para fasttrack. A diferencia de los falsos positivos, que generan ineficiencia
+operativa, un falso negativo implica que una liquidación con inconsistencias clínicas o
+indicios de fraude pasa con una revisión mínima del auditor. Es la métrica de seguridad
+más crítica del sistema. El umbral del 2 % se define como requisito no negociable: por
+encima de ese nivel, el riesgo regulatorio y reputacional para la aseguradora supera el
+beneficio operativo. Su medición precisa requiere un piloto con auditor real; en el alcance
+del MVP se estima indirectamente a partir del Golden Set.
+
+       Tasa de falsos positivos Corresponde a liquidaciones clasificadas incorrectamente
+como de alto riesgo que, tras revisión del auditor, resultan ser casos rutinarios. Los falsos
+positivos tienen un costo operativo directo y un costo de confianza. Esta métrica solo puede
+medirse con precisión en un piloto con auditor real; en el alcance del MVP se estima a partir
+del Golden Set.
+
+       Concordancia auditor-sistema Es el porcentaje de veces que el auditor acepta la
+recomendación del sistema sin modificarla. Valida el supuesto crítico de adopción y con-
+fianza. La interfaz React registra las acciones del auditor para calcular esta métrica en
+producción.
+
+       Tiempo total por lote Es un KPI derivado de la tasa de fast-track y del tiempo de
+revisión de los casos no fast-track. Se estima multiplicando el número de casos en cada
+categoría por el tiempo de revisión correspondiente. La meta es una reducción de al menos
+                                                                                          55
+el 40 % respecto a la línea base de 75.8 horas. Esta meta es conservadora: asume que todos
+los casos de auditoría completa siguen tomando 45 minutos y que los de revisión rápida
+toman 10 minutos. Si el auditor desarrolla confianza en el sistema y reduce el tiempo de
+los casos de revisión rápida, la reducción real podría superar el 60 %.
+
+
+
+9.3   Método de medición
+
+
+       La validación del MVP se basa en simulación y proyección, no en medición directa
+con un auditor en producción. Esta limitación se declara explícitamente.
+
+       La simulación no valida que los puntajes del LLM caerán en los rangos esperados;
+eso solo puede confirmarlo el benchmark con el modelo real y, en última instancia, un
+piloto con auditor. Lo que la simulación sí valida es la lógica del motor de decisión: dado
+un puntaje X y un resultado de Fase 1 Y, el sistema debe producir la categoría correcta.
+Los puntajes simulados (score 20 para cobertura completa, score 40 para condicionales,
+score 55 para cobertura parcial) se derivan de la distribución observada en el benchmark
+de Sonnet, no de un supuesto arbitrario. Sin embargo, la distancia entre la distribución del
+benchmark y la distribución real en operación es una incógnita que solo un piloto puede
+resolver.
+
+       La tasa de fast-track se proyecta mediante el test test projected rate meets target, que
+ejecuta Fase 1 sobre las 101 liquidaciones con los planes MediVida Más 65 y MediVida
+Premium, simula puntajes de Fase 2 según el resultado de cobertura y verifica que la tasa
+resultante se encuentre entre 55 % y 75 %. El test pasa con las configuraciones actuales,
+proyectando una tasa en el rango del 60–68 %. El techo del 75 % existe precisamente para
+detectar calibración insuficiente: una tasa excesivamente alta sugiere que el sistema no está
+siendo lo suficientemente riguroso en la evaluación de riesgo.
+
+       El tiempo total por lote se estima a partir de la distribución proyectada de deci-
+siones, multiplicando el número de casos en cada categoría por el tiempo estimado de
+                                                                                            56
+revisión: 1 minuto para FAST TRACK, 10 minutos para REVISION RAPIDA, 45 minu-
+tos para AUDITORIA COMPLETA y 2 minutos para RECHAZO ADMINISTRATIVO.
+La validación real requeriría un piloto controlado donde un grupo de auditores procese un
+lote con NexusCare y otro sin él, midiendo el tiempo total de cierre del lote. Ese piloto
+queda fuera del alcance del MVP académico.
+
+
+
+
+                                                                                      57
+                                  CAPÍTULO X
+
+                 EVALUACIÓN DE RESULTADOS
+
+
+
+10.1   Resultados del benchmark
+
+
+       El benchmark de cinco modelos sobre 101 liquidaciones (505 evaluaciones) reveló
+diferencias sustantivas en la capacidad de discriminación, la profundidad del análisis y la
+viabilidad económica de cada modelo.
+
+       Claude Sonnet 4 discrimina mejor que los demás. Con una desviación estándar de
+20.1 en los puntajes de riesgo, Sonnet separa los casos de bajo riesgo de los de alto riesgo
+con la mayor amplitud. Su distribución entre bandas fue la más equilibrada: 24.8 % bajo,
+44.6 % medio, 30.7 % alto. La hipótesis del equipo es que Sonnet, al ser un modelo opti-
+mizado para eficiencia, emite juicios más concisos y binarios. Opus, GPT-5.4 y Gemini,
+al generar análisis más detallados, encuentran más puntos de fricción en cada liquidación
+y terminan inflando los puntajes de forma sistemática.
+                 Figura 10.1. Distribución de puntajes de riesgo por modelo.
+
+
+
+       GPT-5.4 resulta inviable para fast-track. Con 0 % de liquidaciones clasificadas co-
+mo bajo riesgo, una desviación estándar de 8.8 y un puntaje mínimo de 42, GPT-5.4 trata
+todas las liquidaciones como si fueran de riesgo medio-alto. Su media de 69.3 está práctica-
+mente en la frontera de auditoría completa. Un sistema que escala todo a revisión humana
+no aporta valor operativo. El hallazgo es relevante porque GPT-5.4 demostró buena pro-
+fundidad clínica, lo que sugiere que su problema no es la falta de capacidad analítica sino
+un sesgo sistemático hacia la sobrepenalización.
+
+       Los tres modelos restantes resultaron inviables como modelo único, aunque por ra-
+zones distintas. Opus genera el análisis más profundo del benchmark, pero con solo 3.1 %
+de fast-track y un costo 10x, funciona como segundo nivel, no como screening. MedGem-
+ma, pese a su entrenamiento médico, obtuvo la menor profundidad y quedó limitado por
+su ventana de 8,192 tokens y la necesidad de GPU dedicada. Gemini fue el más barato y
+el más confiable en parsing, pero clasificó el 96 % de los casos como de alto riesgo.
+
+
+
+
+                                                                                         59
+            Figura 10.2. Promedio de hallazgos por liquidación, por tipo y modelo.
+
+
+
+       Análisis de confounding: ¿el volumen de ítems infla el puntaje? Para cuantificar
+este efecto, se calculó la correlación entre el número total de ítems por liquidación y el
+risk score asignado por cada modelo:
+
+
+
+
+          Tabla 10.1. Correlación entre número de ítems por liquidación y risk score
+
+
+
+       Ningún modelo muestra correlación positiva significativa entre volumen y score.
+Sonnet, el modelo seleccionado para screening, presenta una correlación negativa. Esto
+descarta la hipótesis de que la capacidad discriminativa de Sonnet sea un artefacto de la
+complejidad del caso. La discriminación por sigma es una condición necesaria, pero no
+suficiente: la validación de precisión a nivel de hallazgo requiere un piloto con auditor real.
+
+
+
+
+                                                                                           60
+10.2   Pipeline integrado
+
+
+       El pipeline completo (Fase 1 + Fase 2 con estrategia escalonada, prompts de pro-
+ducción e Identity Vault activo) se ejecutó sobre las 101 liquidaciones del dataset. A di-
+ferencia de las proyecciones de la sección 7.10, esta ejecución invocó el LLM real con la
+configuración de producción.
+
+       La distribución real de decisiones fue:
+
+
+
+
+               Tabla 10.2. Distribución real de decisiones del pipeline integrado
+
+
+
+       La tasa de recomendación de fast-track (65.3 %) se ubica en el extremo superior
+del rango proyectado y casi triplica el 24.8 % del benchmark con Sonnet aislado. Esta tasa
+refleja la clasificación del pipeline; la tasa efectiva de fast-track depende de la aceptación
+del auditor, un factor no medido en este alcance. La categoría AUDITORIA COMPLETA
+es mayor a lo proyectado porque el
+
+       LLM con prompts de producción detecta inconsistencias clínicas que la simulación
+con puntajes fijos no capturaba. No hubo rechazos administrativos.
+
+       Los prompts de producción y el pre-filtrado de Fase 1 produjeron un desplazamien-
+to medible en la distribución de scores de Sonnet:
+
+
+
+
+                                                                                           61
+                 Tabla 10.3. Cambio en la distribución de scores de Sonnet
+
+
+
+       Nota: Los umbrales difieren entre ambas configuraciones (≤ 30 vs. ≤ 45). La des-
+composición de factores se
+
+       presenta más adelante en la Tabla X.4.
+
+       De los 101 claims, 33 (32.7 %) fueron escalados a Opus. Los motivos de escalación,
+que pueden coexistir en un mismo claim, fueron: score Sonnet >45 (26 claims), hallazgo
+de alta severidad por inconsistencia clínica (14 claims), y costo total >S/5,000 con ítems
+en revisión (9 claims). Opus procesó los 33 claims sin errores de parsing, con un tiempo
+promedio de 25.2 segundos por caso.
+
+
+
+
+                                                                                       62
+             Figura 10.3. Distribución real de decisiones del pipeline integrado.
+
+
+
+       Nota sobre la comparación de umbrales. La tasa de fast-track del benchmark
+(24.8 %) utilizó un umbral de ≤ 30, mientras que el pipeline de producción emplea ≤ 45.
+Esta diferencia es el factor dominante en la mejora observada. Un estudio de ablación
+permite descomponer la contribución de cada factor:
+
+
+
+
+                                                                                    63
+               Tabla 10.4. Estudio de ablación de la mejora en tasa de fast-track
+
+
+
+       El estudio de ablación descompone la mejora en tres efectos independientes:
+
+1. Cambio de umbral: +41.6 pp.
+
+2. Prompts de producción: +6.0 pp.
+
+3. Fase 1 (pre-filtrado contractual): -7.0 pp.
+
+       El valor de Fase 1 no está en aumentar la tasa de fast-track, sino en mejorar la
+calidad de la discriminación. Los claims clasificados como fast-track con el pipeline com-
+pleto tienen mayor consistencia clínica verificada que los que habrían calificado solo con
+prompts de producción.
+
+       El costo total de API fue de $12.00 ($2.83 para las 101 llamadas a Sonnet + $9.17
+para las 33 llamadas a Opus), con un tiempo total de ejecución de 38.9 minutos. El costo
+por claim promedio fue de $0.12.
+
+       Aplicando los tiempos estimados de revisión del auditor (1 min para fast-track, 10
+min para revisión rápida, 45 min para auditoría completa), el tiempo total proyectado del
+lote sería de aproximadamente 21 horas, frente a las 75.8 horas del proceso manual, una
+reducción del 72 %.
+
+
+
+
+                                                                                       64
+10.3   Hallazgos clínicos de alto impacto
+
+
+       Más allá de las métricas de distribución, el valor operativo del sistema se ilustra con
+los hallazgos que la Fase 2 señaló como candidatos a investigación durante el benchmark.
+En cinco expedientes, el LLM identificó patrones de facturación que ameritan revisión
+por un auditor, por un monto acumulado superior a S/70,000. Ninguno de estos hallazgos
+constituye una determinación de fraude o de error, pero sí demuestran la capacidad del
+sistema para priorizar los casos que merecen atención humana.
+
+       Dos casos ilustran los patrones que el sistema escala para revisión humana. En una
+angioplastia valorada en aproximadamente S/39,460, los stents coronarios aparecen regis-
+trados como devueltos en el sistema de farmacia, pero el honorario por el procedimiento de
+implantación se mantuvo facturado. Un patrón similar se observó en una cirugía de fémur
+valorada en aproximadamente S/31,177, en la que la prótesis fue revertida, pero el cobro
+del procedimiento persistió. La inconsistencia entre la reversión del insumo de alto costo y
+el mantenimiento del honorario quirúrgico puede tener explicaciones operativas legítimas,
+pero también es consistente con patrones conocidos de facturación de procedimientos no
+completados.
+
+       En el ámbito de inconsistencias clínicas, el sistema detectó un expediente de un
+paciente geriátrico hospitalizado por neumonía donde se facturaron cero antibióticos, cero
+imágenes diagnósticas y cero broncodilatadores, una omisión farmacológica incompatible
+con el diagnóstico. En otro caso, alertó sobre la ausencia de profilaxis antitrombótica en
+una cirugía abdominal de una paciente de 83 años, una omisión que constituye un riesgo
+clínico grave según protocolos estándar.
+
+       Estos hallazgos ilustran que la Fase 2 aporta un valor que excede la verificación
+contractual de la Fase 1: la capacidad de cruzar el diagnóstico, los servicios facturados y los
+protocolos médicos esperados para señalar discrepancias que ameritan revisión humana.
+
+
+                                                                                            65
+10.4   Validación con Golden Set
+
+
+        El Golden Set de 17 liquidaciones, cuyas clasificaciones esperadas fueron validadas
+por un auditor médico externo al equipo, constituye el mecanismo de regresión y calibra-
+ción del pipeline. No es un conjunto de validación independiente, pero cumple una función
+operativa esencial: detectar degradaciones ante cambios en el sistema.
+
+        Nivel 1: Routing de Fase 1 Los 17 tests parametrizados de test routing matches
+expected verifican que cada liquidación del Golden Set recibe el routing correcto. Los
+tests de elegibilidad y cobertura también pasan.
+
+        Nivel 2: Motor de decisión Seis tests simulan puntajes de Fase 2 para verificar que
+el motor de decisión produce las categorías esperadas. Se confirma, entre otros puntos, que
+el umbral de 45 es inclusivo y que la edad avanzada no genera una penalización automática.
+
+        Nivel 3: Proyección de tasa test projected rate meets target ejecuta Fase 1 sobre las
+101 liquidaciones completas, simula Fase 2 y verifica que la tasa de fast-track se encuentra
+entre 55 % y 75 %.
+
+        Diagnóstico de concordancia La ejecución real del pipeline logró una concordancia
+de 10/17 (58.8 %) con las clasificaciones esperadas del Golden Set. Esta cifra no constituye
+una métrica de rendimiento generalizable; su valor es diagnóstico. Revela que la tasa de
+falsos negativos fue del 0 % y que los 7 mismatches corresponden exclusivamente a sobre-
+escalaciones donde el LLM detectó inconsistencias clínicas que no eran evidentes en la
+revisión inicial del auditor.
+
+        Estabilidad de umbrales (Leave-One-Out) Para evaluar si los umbrales dependen
+de algún caso individual del Golden Set, se implementó un análisis leave-one-out. Los 17
+claims pasan las verificaciones, confirmando que ningún caso individual es pivotal para la
+determinación del umbral.
+
+
+                                                                                          66
+10.5    Análisis de costos
+
+
+        El análisis económico compara tres estrategias de procesamiento con el costo ma-
+nual:
+
+
+
+
+                  Tabla 10.5. Comparación de estrategias de procesamiento
+
+
+
+        El costo de la estrategia escalonada ($12.00 por lote) representa menos del 0.001 %
+del valor promedio de un lote hospitalario. El costo de API no es el factor limitante para la
+viabilidad económica del sistema; lo son la adopción por parte del auditor y la integración
+con los sistemas existentes.
+
+
+
+10.6    Cumplimiento de objetivos
+
+
+        La siguiente tabla cruza cada objetivo específico con los resultados obtenidos:
+
+
+
+
+                                                                                          67
+                     Tabla 10.6. Cumplimiento de objetivos del proyecto
+
+
+
+       Sensibilidad de la reducción de tiempo. La reducción de tiempo por lote depende
+de la confianza del auditor en el sistema. El siguiente análisis muestra cómo varía bajo tres
+escenarios de adopción:
+
+
+
+
+                  Tabla 10.7. Sensibilidad de la reducción de tiempo por lote
+
+
+
+       Los tres escenarios superan la meta del 40 %. Sin embargo, la reducción real de-
+pende de la confianza del auditor en el sistema, un factor que solo puede medirse en un
+piloto controlado.
+
+       Sensibilidad de la tasa efectiva de fast-track. La tasa de recomendación de fast-track
+(65.3 %) se convierte en tasa efectiva solo cuando el auditor acepta la recomendación:
+
+
+
+
+                                                                                          68
+                   Tabla 10.8. Sensibilidad de la tasa efectiva de fast-track
+
+
+
+       Con una aceptación del 77 % o superior, la tasa efectiva se mantiene dentro de la
+meta del 50 %. Esta tasa de aceptación es plausible, pero solo puede confirmarse en un
+piloto con auditor real.
+
+       En síntesis, el MVP demuestra que la arquitectura funciona y que las proyecciones
+son favorables. Lo que no demuestra, porque no puede hacerlo dentro del alcance acadé-
+mico, es que el sistema produce los resultados esperados cuando un auditor real procesa
+un lote real con datos de producción. Esa validación requiere un piloto.
+
+
+
+
+                                                                                     69
+                                 CAPÍTULO XI
+
+                     LIMITACIONES Y RIESGOS
+
+
+
+11.1   Dataset
+
+
+       El dataset de 101 liquidaciones tiene cuatro restricciones de generalización. Prime-
+ra, proviene de un único plan de salud (MediVida). Las configuraciones de exclusiones,
+coberturas y medicamentos condicionales varían sustancialmente entre planes; el motor
+de Fase 1 requiere una configuración JSON por cada plan, y su precisión depende de la
+calidad de la extracción semiautomática desde el contrato PDF. Segunda, cubre exclusi-
+vamente liquidaciones hospitalarias. Las atenciones ambulatorias y odontológicas tienen
+estructuras de servicio, patrones de facturación e incentivos económicos distintos. Tercera,
+corresponde a un solo trimestre (Q3 2025), por lo que los patrones estacionales no están
+representados. Cuarta, el dataset no contiene casos confirmados de fraude, lo que impi-
+de evaluar la capacidad del sistema para detectar fraude, funcionalidad valorada por los
+stakeholders pero excluida del alcance del MVP.
+
+       Quinta, el Golden Set de 17 liquidaciones fue clasificado por un único auditor mé-
+dico, sin medición de acuerdo inter-evaluador. Esto impide establecer un ceiling de concor-
+dancia humana: la concordancia del 58.8 % entre el pipeline y el auditor no puede interpre-
+tarse sin saber cuál sería la concordancia entre dos auditores humanos sobre los mismos
+17 casos.
+11.2      Modelo
+
+
+          El benchmark documentó dos sesgos del LLM que afectan la calidad de las deci-
+siones.
+
+          Sobre-detección en reversiones y ajustes administrativos Los modelos interpretan
+las reversiones en farmacia como señales de riesgo, cuando frecuentemente reflejan ajustes
+administrativos normales del sistema de dispensación de la IPRESS. En el caso H0710170,
+tanto Opus como Sonnet marcaron un patrón de 15 reversiones como hallazgo de riesgo
+medio, cuando
+
+          en realidad representaban un cambio de presentación de medicamento registrado
+como reversión más nuevo cargo. Los prompts anti-sesgo mitigan parcialmente este pro-
+blema, pero no lo eliminan.
+
+          Inflación por volumen Opus y GPT-5.4 asignan puntajes más altos a liquidaciones
+con muchos ítems, incluso cuando la consistencia clínica es adecuada. La solución parcial
+es la instrucción explícita de no penalizar por volumen de ítems si son clínicamente con-
+sistentes. Sin embargo, el análisis de correlación mostrado en la sección 10.1 indica que
+este sesgo no afecta a Sonnet de forma sistemática: la correlación entre número de ítems
+y risk score es negativa.
+
+          Opus presentó 3 errores de parsing (3.0 %) y GPT-5.4 presentó 2 (2.0 %). En el
+pipeline de producción, un error de parsing en Sonnet dispara la escalación a Opus; si
+Opus también falla, el caso se deriva a auditoría completa. Este mecanismo de fallback
+evita que un error técnico produzca una decisión automatizada sobre un caso no evaluado,
+pero introduce latencia adicional y costo.
+
+          Ausencia de test-retest El benchmark ejecutó cada par claim-modelo una sola vez.
+Sin repeticiones, no es posible calcular la variabilidad intra-claim. La desviación estándar
+reportada mide la variación entre claims, no la estabilidad del score para un mismo claim.
+
+                                                                                         71
+En producción, la temperatura 0.1 mitiga esta limitación al reducir la estocasticidad del
+modelo, pero no la elimina. Un benchmark con 3 a 5 repeticiones por claim permitiría
+calcular intervalos de confianza y estimar la tasa de claims en la zona de decisión inestable.
+
+
+
+11.3   Operativas
+
+
+       La dependencia de APIs externas constituye el riesgo operativo principal. Tanto
+Sonnet como Opus se consumen vía la API de Anthropic. Una interrupción del servicio
+bloquea la Fase 2 del pipeline. El manejo de errores implementado en orchestrator.py con-
+templa timeouts, reintentos y fallback, pero no elimina la dependencia. En un escenario de
+producción con miles de liquidaciones diarias, el SLA de la API de Anthropic se convierte
+en un componente crítico de la arquitectura.
+
+       La latencia acumulada también es una consideración. Sonnet toma alrededor de 17
+segundos por caso; si se escala a Opus, se agregan cerca de 50 segundos adicionales. Para
+un lote de
+
+       101 liquidaciones procesadas secuencialmente, la Fase 2 toma entre 28 minutos y
+70 minutos. Esto es aceptable para procesamiento por lotes, pero insuficiente para triaje
+en tiempo real si la aseguradora requiriese decisiones instantáneas.
+
+
+
+11.4   Adopción
+
+
+       La barrera de adopción más significativa no es técnica sino organizacional. El au-
+ditor médico tiene una trayectoria profesional construida sobre su juicio clínico individual.
+Un sistema que clasifica como fast-track el 60 % de los casos podría ser percibido como
+una amenaza a su relevancia profesional, no como una herramienta de productividad. La
+interfaz de NexusCare mitiga este riesgo de tres maneras: expone la justificación clínica
+
+
+                                                                                          72
+completa junto a cada puntaje, preserva el override humano obligatorio y separa los ha-
+llazgos por tipo y severidad para que el auditor pueda evaluar rápidamente si el sistema ha
+identificado algo que él habría pasado por alto.
+
+       La concordancia auditor-sistema, la métrica que valida la adopción, solo puede
+medirse en un piloto con usuarios reales. El MVP la registra en la interfaz pero no la ha
+medido.
+
+
+
+11.5   Regulatorios
+
+
+       El marco normativo peruano presenta tanto protecciones como vacíos respecto a la
+automatización de decisiones en salud. La Ley No 29733 de Protección de Datos Persona-
+les establece requisitos claros sobre el tratamiento de datos sensibles de salud, que Nexus-
+Care aborda mediante el Identity Vault y la anonimización previa al LLM. Sin embargo,
+la normativa de SUSALUD no contempla explícitamente el uso de inteligencia artificial
+en la adjudicación de liquidaciones médicas. No existe una prohibición, pero tampoco una
+autorización o marco regulatorio específico.
+
+       Esta ambigüedad implica que un despliegue en producción requeriría consulta pre-
+via con SU- SALUD y, probablemente, la implementación del sistema como herramienta
+de soporte, no de decisión, hasta que se desarrolle normativa específica. Esa es precisa-
+mente la posición que NexusCare adopta al mantener el human-in-the-loop obligatorio.
+
+       El EU AI Act (European Parliament, 2024) clasifica los sistemas de IA en salud
+como de alto riesgo, requiriendo supervisión humana, trazabilidad y evaluación de confor-
+midad. Aunque no es
+
+       vinculante en el Perú, sirve como referencia normativa y anticipa la dirección re-
+gulatoria probable en la región. NexusCare cumple con los tres requisitos: supervisión
+humana, trazabilidad y evaluación de conformidad.
+
+                                                                                        73
+                                CAPÍTULO XII
+
+                  APRENDIZAJES Y LECCIONES
+
+
+
+12.1   Técnicos
+
+
+       Los modelos generalistas de frontera (Claude Sonnet, Claude Opus) superaron al
+modelo especialista médico (MedGemma 27B) en una tarea que, en principio, debería
+favorecer al especialista. MedGemma está entrenado con corpus médicos y entiende ter-
+minología clínica. Sin embargo, la tarea de auditoría de liquidaciones no es puramente
+médica: requiere razonamiento sobre datos tabulares heterogéneos (códigos, descripcio-
+nes, costos), detección de patrones administrativos (reversiones, duplicados) y evaluación
+de proporcionalidad económica. Estas capacidades dependen más de la escala y la versatili-
+dad del modelo que de su especialización en el dominio clínico. La ventana de contexto de
+8,192 tokens de MedGemma fue una limitación adicional que obligó a truncar la informa-
+ción de entrada, perdiendo visibilidad sobre los ítems de cola larga donde frecuentemente
+se esconden los sobrecostos.
+
+       Dos hallazgos operativos complementan esta lección. La desviación estándar, co-
+mo métrica de discriminación, resultó ser el indicador más predictivo de utilidad: si el
+equipo hubiese seleccionado por media de puntaje o de número de hallazgos, habría ele-
+gido Opus, un modelo que discrimina poco y no genera clasificaciones fast-track. Y el
+pre-filtrado de Fase 1 aportó un valor imprevisto pero contra-intuitivo: al inyectar el con-
+texto de cobertura contractual en el prompt del LLM, no redujo la tasa de sobre-escalación
+sino que la aumentó en 7 pp (de 72.3 % a 65.3 % de fast-track, según el estudio de ablación
+de §10.2). El valor de Fase 1 no está en reducir falsos positivos sino en mejorar la calidad
+de la discriminación: los 7 claims adicionales que se escalan son precisamente aquellos
+con discrepancias contractuales que el LLM, sin contexto de cobertura, habría ignorado.
+La sinergia entre el motor de reglas y el LLM no es aditiva (ambos reducen riesgo) sino
+complementaria (cada uno detecta un tipo distinto de anomalía).
+
+
+
+12.2   Metodológicos
+
+
+       El Golden Set de 17 liquidaciones resultó más útil de lo esperado para un conjunto
+tan pequeño. Su función no es estadística (17 casos no prueban nada en sentido inferencial),
+sino de calibración y regresión. Lo que le da credibilidad es que las clasificaciones espera-
+das fueron definidas por un auditor médico, no por el equipo técnico: el Golden Set refleja
+criterio clínico experto, no una expectativa autorreferencial. Cada vez que se modificó un
+umbral, se ajustó un prompt o se cambió la lógica de routing, el Golden Set respondió a
+la pregunta operativa inmediata: “¿este cambio rompe algún caso que antes funcionaba?”
+Los 59 tests del Golden Set (test golden set.py), 51 parametrizados sobre los 17 claims,
+más 6 de simulación de decisión y 2 de proyección de tasa, se ejecutan en menos de 3
+segundos y cubren routing, elegibilidad, cobertura y la decisión final. Sin este mecanismo,
+la calibración de umbrales habría sido un proceso de ensayo y error sin retroalimentación
+inmediata.
+
+       La estrategia escalonada (Sonnet para screening, Opus para análisis profundo)
+constituye un patrón reutilizable más allá de este proyecto. El principio subyacente (usar
+un modelo rápido y barato para filtrar, y uno lento y caro para profundizar) aplica a cual-
+quier flujo de trabajo donde la distribución de complejidad sea asimétrica (muchos casos
+simples, pocos complejos). Los criterios de escalación (nexuscare/pipeline/escalation.py)
+encapsulan la lógica de forma parametrizable: umbrales de score, tipos de hallazgo, costo
+total del caso. Esto permite ajustar la agresividad de la escalación según el contexto
+operativo sin modificar la arquitectura.
+
+
+
+
+                                                                                         75
+12.3   De negocio
+
+
+       La heterogeneidad de datos que se describe en la sección 2.3 como un problema
+teórico resultó ser una barrera práctica concreta durante el desarrollo. La extracción de
+reglas de plan desde los contratos PDF de MediVida consumió más tiempo del previsto
+porque los contratos utilizan lenguaje ambiguo (“se cubrirán los medicamentos indicados
+excepto los expresamente excluidos”), referencias cruzadas entre secciones y tablas con
+formatos inconsistentes. El proceso semiautomático (LLM extrae, humano valida) redujo
+el esfuerzo, pero cada nuevo plan requiere entre 4 y 8 horas de configuración y validación.
+En un escenario con decenas de planes activos, como operan las EPS grandes, esto implica
+un costo operativo recurrente que debe dimensionarse en el modelo de negocio.
+
+       La brecha entre la viabilidad técnica y la adopción operativa se hizo evidente du-
+rante las conversaciones informales con auditores. El sistema puede procesar 101 liquida-
+ciones en menos de 2 horas; la pregunta operativa no es “¿funciona?” sino “¿quién firma
+la decisión de clasificar como fast-track ?” En el contexto regulatorio peruano, una liqui-
+dación clasificada como fast-track que resulte en una glosa de SUSALUD recae sobre la
+persona que autorizó la aprobación, no sobre el sistema. Hasta que la normativa se adapte
+al uso de IA como herramienta de soporte, o hasta que la experiencia acumulada gene-
+re confianza institucional, la fast-track operará como una pre-aprobación que el auditor
+ratifica con un clic, no como una decisión final sin intervención humana.
+
+
+
+
+                                                                                        76
+                               CAPÍTULO XIII
+
+                              CONCLUSIONES
+
+
+
+13.1   Validación Preliminar del MVP
+
+
+       La hipótesis de valor del MVP, que un sistema de dos fases (reglas contractuales +
+LLM) puede clasificar las liquidaciones hospitalarias con suficiente precisión para reducir
+el tiempo de auditoría en un 40 %, recibió evidencia favorable pero no fue validada en
+producción. La arquitectura es viable (0 errores de ejecución, 0 errores de parsing en 101
+liquidaciones),
+
+       La tasa de recomendación de fast-track alcanzó el 65.3 %, por encima del rango
+meta de 50– 60 %. Una tasa más alta de la esperada podría indicar que el umbral de decisión
+es demasiado permisivo y que se están dejando pasar casos que merecerían revisión. Dicho
+esto, hay dos razones para no alarmarse todavía. Por un lado, el resultado está lejos del
+techo de alerta del 75 % que definimos en §9.3 como señal de calibración insuficiente.
+Por otro, ninguno de los 17 casos del Golden Set que debían escalarse fue clasificado
+erróneamente como fast-track, es decir, la tasa de falsos negativos observada es cero. El
+problema es que 17 casos son pocos para hacer una afirmación fuerte al respecto, y además
+esos mismos casos se usaron para calibrar los umbrales, con lo cual hay un sesgo inherente.
+En la práctica, la pregunta de si el 65.3 % es seguro o riesgoso solo puede responderla un
+piloto con auditores reales procesando lotes de producción. Lo que sí podemos afirmar
+es que el exceso sobre la meta se explica principalmente por la recalibración de umbrales
+y, en menor medida, por los prompts anti-sesgo, como muestra el estudio de ablación de
+§10.2. Si en el piloto la tasa de falsos negativos supera el 2 %, la acción inmediata sería
+bajar el umbral de 45 a un valor más conservador.
+       El análisis de sensibilidad muestra que la reducción de tiempo supera el 40 % inclu-
+so en el escenario más pesimista (57 %). Sin embargo, la reducción de tiempo depende de
+supuestos sobre el comportamiento del auditor que no han sido medidos, y la concordan-
+cia del Golden Set (58.8 %) revela una tasa de sobre-escalación que requiere calibración
+adicional. La validación operativa con un auditor real en producción queda pendiente; el
+MVP deja preparada la infraestructura para ello.
+
+       Los datos que sustentan esta afirmación son tres. Primero, el benchmark de 505
+evaluaciones demostró que Claude Sonnet 4 discrimina entre casos de bajo y alto riesgo
+con una distribución equilibrada (σ = 20.1), lo que habilita la clasificación automática. Se-
+gundo, el pipeline integrado (Fase 1 + Fase 2 con estrategia escalonada) procesó las 101
+liquidaciones sin errores, produciendo 66 fast-track (65.3 %), 9 revisiones rápidas (8.9 %)
+y 26 auditorías completas (25.7 %), con un costo total de API de USD 12.00 en 38.9 minu-
+tos. Tercero, el Golden Set de 17 casos, diseñado como herramienta de regresión y calibra-
+ción y no como conjunto de validación independiente, mostró una concordancia de 10/17
+(58.8 %) con el pipeline real. Los 7 mismatches son sobre-escalaciones (falsos positivos,
+no falsos negativos), lo que indica una dirección segura del error pero también un margen
+de calibración pendiente.
+
+       Lo que falta es la validación con el usuario final. La métrica de concordancia
+auditor-sistema y la tasa de falsos positivos en condiciones reales solo pueden obtenerse
+mediante un piloto controlado. El MVP deja preparada la infraestructura para esa medición
+(interfaz con registro de acciones, logging de pipeline), pero el dato no existe aún.
+
+
+
+13.2   Contribución
+
+
+       NexusCare aporta dos elementos concretos al estado del arte de la auditoría médi-
+ca automatizada en el Perú. Lo más transferible es la demostración de que la arquitectura
+de dos fases (reglas + LLM) complementa al LLM único en una dimensión que el LLM
+
+                                                                                         78
+solo no cubre: la verificación contractual determinística. El estudio de ablación (§10.2)
+mostró que Fase 1 no mejora la tasa de fast-track (el LLM con prompts calibrados alcan-
+za un 72.3 % sin contexto contractual), pero sí mejora la calidad de la discriminación al
+escalar los 7 claims con discrepancias contractuales que el LLM ignoraba. En dominios
+donde conviven reglas de negocio explícitas con juicios que requieren razonamiento so-
+bre lenguaje natural, la combinación no es aditiva sino complementaria: las verificaciones
+contractuales son determinísticas y reproducibles, mientras que el LLM se concentra en lo
+que genuinamente aporta, el razonamiento clínico contextual. El segundo es el benchmark
+comparativo de cinco modelos sobre datos reales del sector salud peruano: la superioridad
+del generalista sobre el especialista, la importancia de sigma como métrica de discrimina-
+ción y la inviabilidad de GPT-5.4 por sobre-penalización son hallazgos empíricos repro-
+ducibles. No se encontró literatura previa que compare modelos de lenguaje en esta tarea
+específica, ni en el Perú ni en la región.
+
+       El diseño del pipeline con privacy by design, trazabilidad y Golden Set para regre-
+sión continua complementa la contribución, aunque responde más a buenas prácticas de
+ingeniería que a una innovación metodológica.
+
+
+
+13.3   Viabilidad
+
+
+       La viabilidad técnica está demostrada: el pipeline procesa 101 liquidaciones sin
+errores fatales, los 190 tests pasan, el costo de API es marginal frente al valor de las liqui-
+daciones, y la latencia es compatible con procesamiento por lotes.
+
+       La viabilidad económica es favorable con reservas. El costo de API medido (USD
+12.00 por lote con estrategia escalonada, 33 % de escalación a Opus) es insignificante. El
+ahorro operativo estimado (de 75.8 horas a 21–32.5 horas según el escenario de adopción,
+una reducción del 57–72 %) justifica la inversión en desarrollo y mantenimiento del sis-
+tema. La reserva es la dependencia del pricing de Anthropic: un aumento significativo en
+
+                                                                                           79
+los precios de API alteraría la ecuación, aunque el sistema soporta la migración a otros
+modelos (Gemini, por ejemplo, a USD 1.78 por lote).
+
+       La viabilidad operativa es la más incierta. Requiere tres condiciones que no depen-
+den del equipo técnico: (a) disposición de una EPS/IAFAS a participar en un piloto con
+datos de producción, (b) aceptación del auditor médico del flujo de trabajo propuesto, y
+(c) claridad regulatoria de SUSALUD sobre el uso de IA como herramienta de soporte en
+la adjudicación de liquidaciones. Sin estas tres condiciones, NexusCare permanece como
+un proyecto académico técnicamente validado.
+
+
+
+
+                                                                                       80
+                                 CAPÍTULO XIV
+
+                             TRABAJO FUTURO
+
+
+
+14.1   Corto plazo (3–6 meses)
+
+
+        La prioridad inmediata es un piloto controlado con una IAFAS. El piloto requeriría:
+acceso a las liquidaciones de producción (no las 101 del dataset actual, sino lotes operativos
+con diversidad de planes y tipos de atención), la participación de al menos dos auditores
+médicos para medir la concordancia y los falsos positivos, y un periodo mínimo de 3 meses
+para capturar la variabilidad temporal. El diseño experimental debería incluir un grupo de
+control (auditoría manual) y un grupo de tratamiento (auditoría asistida por NexusCare),
+y medir el tiempo total de cierre del lote como variable principal.
+
+        Un feature crítico pendiente es la verificación de precios: comparar los montos li-
+quidados por la IPRESS con los precios efectivamente convenidos con la IAFAS. Para
+medicamentos, las fuentes de referencia son el Observatorio Privado de Precios de Medi-
+camentos (OPPM) de APEPS, que reporta precios reales del mercado de boticas, y Kairos,
+que publica precios de lista de laboratorios. La integración de estas fuentes permitiría de-
+tectar automáticamente sobrecostos en la Capa 1 del pipeline, antes de que el caso llegue
+al análisis clínico.
+
+        En paralelo, la configuración del sistema debe ampliarse a más planes de salud. El
+proceso de extracción de reglas desde PDF contractuales (nexuscare/plan extraction/) ya
+está implementado, pero cada plan requiere validación humana. La prioridad sería confi-
+gurar los 3–5 planes con mayor volumen de liquidaciones de la EPS piloto.
+       La calibración de umbrales debe incorporar el feedback del auditor. El Golden Set
+actual de 17 casos es un punto de partida; con datos de producción, puede expandirse a 50–
+100 casos con clasificaciones confirmadas por el auditor, lo que permitiría una calibración
+con mayor representatividad estadística.
+
+
+
+14.2   Mediano plazo (6–18 meses)
+
+
+       La extensión a liquidaciones ambulatorias y odontológicas duplicaría el mercado
+direccionable del sistema. Las atenciones ambulatorias operan bajo CPM (no FFS), lo que
+cambia los incentivos de facturación y los tipos de inconsistencia relevantes. El motor de
+Fase 1 requeriría nuevas configuraciones de reglas, y los prompts de Fase 2 necesitarían
+adaptarse a las diferencias clínicas (las ambulatorias son más breves, con menos ítems pero
+mayor volumen).
+
+       La integración con TEDEF y los ERPs de las IPRESS eliminaría la etapa de in-
+gesta manual. En la actualidad, las liquidaciones se reciben como archivos JSON pre-
+normalizados. Una integración directa con TEDEF permitiría el procesamiento automa-
+tizado de lotes a medida que se reciben, reduciendo el ciclo de cierre. La complejidad
+principal no es técnica sino organizacional: TEDEF opera bajo estándares definidos por
+SUSALUD, y cualquier integración requiere certificación.
+
+       Un módulo de detección de fraude podría complementar la auditoría de consisten-
+cia clínica. Los patrones de fraude más comunes en el sector (procedimientos fantasma,
+facturación duplicada de dispositivos de alto valor, upcoding) requieren análisis longitudi-
+nales (comparación entre liquidaciones del mismo prestador) que exceden el alcance del
+análisis caso por caso actual. Este módulo necesitaría acceso a datos históricos agregados,
+lo que plantea desafíos adicionales de privacidad y almacenamiento.
+
+
+
+
+                                                                                         82
+14.3   Largo plazo
+
+
+       La evolución natural del sistema apunta a un modelo SaaS multi-tenant para múl-
+tiples EPS/IAFAS, con la adopción de FHIR como formato nativo, lo que facilita una
+eventual expansión regional. Colombia, Chile y México enfrentan problemas de auditoría
+similares con marcos regulatorios en evolución. Como línea de investigación, el hallaz-
+go de que el modelo generalista supera al especialista en esta tarea merece validación en
+otros dominios clínicos donde el conocimiento especializado podría ser más determinante,
+como radiología, patología y genómica.
+
+
+
+
+                                                                                      83
+REFERENCIAS BIBLIOGRÁFICAS
+
+ 1. Anthropic, “Claude api documentation,” https://docs.anthropic.com/, 2025.
+ 2. S. Blank, “Why the lean start-up changes everything,” Harvard Business Review,
+    vol. 91, no. 5, pp. 63–72, 2013.
+ 3. S. Brown, “The c4 model for visualising software architecture,” https:
+    //c4model.com/, 2018.
+ 4. D. S. Char, N. H. Shah, and D. Magnus, “Implementing machine learning in health
+    care: Addressing ethical challenges,” New England Journal of Medicine, vol. 378,
+    no. 11, pp. 981– 983, 2018.
+ 5. CNseg/EY, “Seguradoras projetam investir r$ 2,8 bilhões em inteligência artificial
+    em 2026,” Sonho Seguro, 2026.
+ 6. Congreso de la República del Perú, “Ley no 29733, ley de protección de datos
+    personales,” Diario Oficial El Peruano, 2011.
+ 7. Consultor Salud, “Adres implementará auditoría inteligente de cuentas médicas,”
+    https: //consultorsalud.com/adres-implementara-auditoria-inteligente/, 2025.
+ 8. F. J. Dorfner et al., “Biomedical large languages models seem not to be superior
+    to generalist models on unseen medical data,” arXiv, 2024. [Online]. Available:
+    https://arxiv.org/abs/2408.13833
+ 9. European Parliament, “Regulation (eu) 2024/1689 on artificial intelligence (ai act),”
+    Official Journal of the European Union, 2024.
+
+
+
+                                         84
+10. EXL Service, “Ai-powered insurance workflows: Operationalizing llms with exl
+    insurance   llm,”     https://www.exlservice.com/insights/white-paper/
+    ai-powered-insurance-workflows-operationalizing-llms-with-exl-insurance-llm,
+    2024, libro blanco.
+11. Google, “Medgemma: Medical foundation models,” Google DeepMind, 2025. [On-
+    line]. Available: https://deepmind.google/models/gemma/medgemma/
+12. HCIM, “Understanding auto-adjudication,” https://hcim.com/ understanding-
+    auto-adjudication/, 2024. 67
+13. HL7 International, “Fhir release 4,” https://hl7.org/fhir/R4/, 2019.
+14. R. Hurtado and J. Linares, “Nexuscare: Solución de auditoría automatizada de li-
+    quidaciones médicas basada en inteligencia artificial. informe preliminar,” Univer-
+    sidad de Ingeniería y Tecnología, 2025.
+15. K. D. Mandl and I. S. Kohane, “Escaping the ehr trap: The future of health it,” New
+    England Journal of Medicine, vol. 366, no. 24, pp. 2240–2242, 2012.
+16. A. Mustafa, U. Naseem, and M. Rahimi Azghadi, “Enhancing medical coding ef-
+    ficiency through domain-specific fine-tuned large language models,” npj Health
+    Systems, 2025.
+17. Z. Obermeyer and E. J. Emanuel, “Predicting the future: Big data, machine lear-
+    ning, and clinical medicine,” New England Journal of Medicine, vol. 375, no. 13,
+    pp. 1216–1219, 2016.
+18. A. Rajkomar, J. Dean, and I. Kohane, “Machine learning in medicine,” New En-
+    gland Journal of Medicine, vol. 380, no. 14, pp. 1347–1358, 2019.
+19. E. Ries, The Lean Startup: How Today’s Entrepreneurs Use Continuous Innovation
+    to Create Radically Successful Businesses. Crown Business, 2011.
+20. D. Sculley, G. Holt, D. Golovin, E. Davydov, T. Phillips, D. Ebner, V. Chaudhary, M.
+    Young, J.-F. Crespo, and D. Dennison, “Hidden technical debt in machine learning
+    systems,” in Advances in Neural Information Processing Systems, vol. 28, 2015,
+    pp. 2503–2511.
+
+
+                                                                                     85
+21. A. Soroush et al., “Large language models are poor medical coders: Benchmarking
+    of medical code querying,” NEJM AI, 2024.
+22. SUSALUD, “Anuario estadístico 2023,” Superintendencia Nacional de Salud,
+    2023. [Online]. Available: https://www.gob.pe/institucion/susalud/
+    informes-publicaciones
+23. ——, “Eps/iafas - tedef 2024,” http://datos.susalud.gob.pe/dataset/
+    eps-iafas-tedef-2024, 2024, conjunto de datos. Datos Abiertos SUSALUD.
+24. E. J. Topol, “High-performance medicine: The convergence of human and artificial
+    intelligence,” Nature Medicine, vol. 25, no. 1, pp. 44–56, 2019.
+25. World Health Organization, Ethics and Governance of Artificial Intelligence for
+    Health: WHO Guidance. World Health Organization, 2021. 68
+
+
+
+
+                                                                                 86
+                                CAPÍTULO XV
+
+                                     ANEXOS
+
+
+
+15.1   Glosario
+
+
+       Término Definición
+
+       CIE-10 (ICD-10) Clasificación Internacional de Enfermedades, décima revisión.
+Estándar de la OMS para codificación de diagnósticos médicos. CPT Current Procedural
+Terminology. Sistema de codificación de procedimientos médicos de la AMA. EPS Enti-
+dad Prestadora de Salud. Organización que administra planes de salud complementarios
+en el Perú. FHIR Fast Healthcare Interoperability Resources. Estándar de interoperabili-
+dad de datos clínicos de HL7 International. Golden Set Conjunto curado de liquidaciones
+con clasificaciones esperadas, utilizado para regresión y calibración. IAFAS Institución
+Administradora de Fondos de Aseguramiento en Salud. Entidad que administra fondos de
+seguro de salud. IPRESS Institución Prestadora de Servicios de Salud. Clínica u hospital
+que brinda atención y presenta liquidaciones. LLM Large Language Model. Modelo de len-
+guaje de gran escala entrenado sobre corpus textuales masivos. MLR Medical Loss Ratio.
+Razón entre siniestros pagados y primas cobradas; indicador de eficiencia de la asegurado-
+ra. MVP Minimum Viable Product. Versión mínima funcional del producto que permite
+validar hipótesis de negocio. PII Personally Identifiable Information. Datos que permiten
+identificar a una persona natural. SUSALUD Superintendencia Nacional de Salud. Ente
+regulador del sistema de salud en el Perú. TEDEF Plataforma de intercambio electrónico
+de datos entre EPS e IPRESS para liquidaciones y acreditación.
+

@@ -1,0 +1,40 @@
+\addcontentsline{toc}{section}{CAPÍTULO XI}
+\chapter{LIMITACIONES Y RIESGOS}
+
+\section{Dataset}
+
+El \textit{dataset}  de 101 liquidaciones tiene cuatro restricciones de generalización. Primera, proviene de un único plan de salud (MediVida). Las configuraciones de exclusiones, coberturas y medicamentos condicionales varían sustancialmente entre planes; el motor de Fase 1 requiere una configuración JSON por cada plan, y su precisión depende de la calidad de la extracción semiautomática desde el contrato PDF. Segunda, cubre exclusivamente liquidaciones hospitalarias. Las atenciones ambulatorias y odontológicas tienen estructuras de servicio, patrones de facturación e incentivos económicos distintos. Tercera, corresponde a un solo trimestre (Q3 2025), por lo que los patrones estacionales no están representados. Cuarta, el \textit{dataset}  no contiene casos confirmados de fraude, lo que impide evaluar la capacidad del sistema para detectar fraude, funcionalidad valorada por los \textit{stakeholders} pero excluida del alcance del MVP.
+
+Quinta, el \textit{Golden Set} de 17 liquidaciones fue clasificado por un único auditor médico, sin medición de acuerdo inter-evaluador. Esto impide establecer un \textit{ceiling} de concordancia humana: la concordancia del 58.8 \% entre el pipeline y el auditor no puede interpretarse sin saber cuál sería la concordancia entre dos auditores humanos sobre los mismos 17 casos.
+
+\section{Modelo}
+
+El \textit{benchmark} documentó dos sesgos del LLM que afectan la calidad de las decisiones.
+
+\textbf{Sobre-detección en reversiones y ajustes administrativos} Los modelos interpretan las reversiones en farmacia como señales de riesgo, cuando frecuentemente reflejan ajustes administrativos normales del sistema de dispensación de la IPRESS. En el caso H0710170, tanto Opus como Sonnet marcaron un patrón de 15 reversiones como hallazgo de riesgo medio, cuando en realidad representaban un cambio de presentación de medicamento registrado como reversión más nuevo cargo. Los \textit{prompts} anti-sesgo mitigan parcialmente este problema, pero no lo eliminan.
+
+\textbf{Inflación por volumen} Opus y GPT-5.4 asignan puntajes más altos a liquidaciones con muchos ítems, incluso cuando la consistencia clínica es adecuada. La solución parcial es la instrucción explícita de no penalizar por volumen de ítems si son clínicamente consistentes. Sin embargo, el análisis de correlación mostrado en la sección 10.1 indica que este sesgo no afecta a Sonnet de forma sistemática: la correlación entre número de ítems y \textit{risk score} es negativa.
+
+Opus presentó 3 errores de \textit{parsing} (3.0 \%) y GPT-5.4 presentó 2 (2.0 \%). En el pipeline de producción, un error de \textit{parsing} en Sonnet dispara la escalación a Opus; si Opus también falla, el caso se deriva a auditoría completa. Este mecanismo de \textit{fallback} evita que un error técnico produzca una decisión automatizada sobre un caso no evaluado, pero introduce latencia adicional y costo.
+
+\textbf{Ausencia de \textit{test-retest}} El benchmark ejecutó cada par \textit{claim}-modelo una sola vez. Sin repeticiones, no es posible calcular la variabilidad intra-\textit{claim}. La desviación estándar reportada mide la variación entre \textit{claims}, no la estabilidad del \textit{score} para un mismo \textit{claim}. En producción, la temperatura 0.1 mitiga esta limitación al reducir la estocasticidad del modelo, pero no la elimina. Un benchmark con 3 a 5 repeticiones por \textit{claim} permitiría calcular intervalos de confianza y estimar la tasa de \textit{claims} en la zona de decisión inestable.
+
+\section{Operativas}
+
+La dependencia de APIs externas constituye el riesgo operativo principal. Tanto Sonnet como Opus se consumen vía la API de Anthropic \cite{anthropic2025claude}. Una interrupción del servicio bloquea la Fase 2 del \textit{pipeline}. El manejo de errores implementado en orchestrator.py contempla \textit{timeouts}, reintentos y \textit{fallback}, pero no elimina la dependencia. En un escenario de producción con miles de liquidaciones diarias, el SLA de la API de Anthropic se convierte en un componente crítico de la arquitectura.
+
+La latencia acumulada también es una consideración. Sonnet toma alrededor de 17 segundos por caso; si se escala a Opus, se agregan cerca de 50 segundos adicionales. Para un lote de 101 liquidaciones procesadas secuencialmente, la Fase 2 toma entre 28 minutos y 70 minutos. Esto es aceptable para procesamiento por lotes, pero insuficiente para triaje en tiempo real si la aseguradora requiriese decisiones instantáneas.
+
+\section{Adopción}
+
+La barrera de adopción más significativa no es técnica sino organizacional. El auditor médico tiene una trayectoria profesional construida sobre su juicio clínico individual. Un sistema que clasifica como fast-track el 60 \% de los casos podría ser percibido como una amenaza a su relevancia profesional, no como una herramienta de productividad. La interfaz de NexusCare mitiga este riesgo de tres maneras: expone la justificación clínica completa junto a cada puntaje, preserva el \textit{override} humano obligatorio y separa los hallazgos por tipo y severidad para que el auditor pueda evaluar rápidamente si el sistema ha identificado algo que él habría pasado por alto.
+
+La concordancia auditor-sistema, la métrica que valida la adopción, solo puede medirse en un piloto con usuarios reales. El MVP la registra en la interfaz pero no la ha medido.
+
+\section{Regulatorios}
+
+El marco normativo peruano presenta tanto protecciones como vacíos respecto a la automatización de decisiones en salud. La Ley No 29733 de Protección de Datos Personales \cite{peru2011ley29733} establece requisitos claros sobre el tratamiento de datos sensibles de salud, que \textbf{\textit{NexusCare}} aborda mediante el \textit{Identity Vault} y la anonimización previa al LLM. Sin embargo, la normativa de SUSALUD no contempla explícitamente el uso de inteligencia artificial en la adjudicación de liquidaciones médicas. No existe una prohibición, pero tampoco una autorización o marco regulatorio específico.
+
+Esta ambigüedad implica que un despliegue en producción requeriría consulta previa con SU- SALUD y, probablemente, la implementación del sistema como herramienta de soporte, no de decisión, hasta que se desarrolle normativa específica. Esa es precisamente la posición que NexusCare adopta al mantener el \textit{human-in-the-loop} obligatorio.
+
+El EU AI Act \cite{eu2024aiact} clasifica los sistemas de IA en salud como de alto riesgo, requiriendo supervisión humana, trazabilidad y evaluación de conformidad. De manera complementaria, la OMS establece que la ética y los derechos humanos deben ocupar un lugar central en el diseño, despliegue y uso de sistemas de inteligencia artificial para la salud, junto con mecanismos de gobernanza que aseguren la responsabilidad de los actores involucrados \cite{who2021ethics}. Aunque estos marcos no son vinculantes en el Perú, sirven como referencia normativa y anticipan la dirección regulatoria probable en la región. \textbf{\textit{NexusCare}} cumple con estos principios mediante supervisión humana, trazabilidad y evaluación de conformidad.

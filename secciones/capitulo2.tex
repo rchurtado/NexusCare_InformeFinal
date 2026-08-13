@@ -1,0 +1,125 @@
+\addcontentsline{toc}{section}{CAPÍTULO II}
+
+\chapter{CONTEXTO DEL PROBLEMA}
+
+\section{El sistema EPS/IAFAS peruano}
+El sistema privado de salud del Perú opera bajo la regulación de la Superintendencia Nacional de Salud (SUSALUD) e involucra tres actores institucionales principales. Las IAFAS (Instituciones Administradoras de Fondos de Aseguramiento en Salud), entre las cuales se encuentran las EPS (Entidades Prestadoras de Salud), gestionan los fondos y planes de aseguramiento. Las IPRESS (Instituciones Prestadoras de Servicios de Salud), es decir, clínicas y hospitales, brindan la atención médica y presentan las liquidaciones (\textit{claims}) para su reembolso. SUSALUD supervisa la relación entre ambas partes y establece los marcos normativos, incluidos los estándares para el intercambio de información a través de la plataforma TEDEF.
+
+Cada liquidación médica hospitalaria contiene datos estructurados del paciente, diagnósticos codificados según la Clasificación Internacional de Enfermedades (CIE-10), procedimientos con códigos propios de las IPRESS, prescripciones farmacológicas, materiales e insumos, servicios de imagenología y consultas. Los montos oscilan entre cientos y decenas de miles de soles por caso, con un promedio de S/21,840 por hospitalización, según el análisis del \textit{dataset} del estudio.
+
+Un problema persistente del sistema es la heterogeneidad de los datos. Al no existir una adopción generalizada de estándares de interoperabilidad como HL7 FHIR \cite{hl7_2019_fhir}, cada IPRESS codifica sus registros clínicos y administrativos en formatos propios. Si bien la plataforma TEDEF de SUSALUD define un formato de intercambio, este carece del rigor esperado en un sistema transaccional: omite validaciones clave y deja margen a ambigüedades que limitan su efectividad. Esto impone un doble esfuerzo de normalización, tanto para las IPRESS, que deben adaptar sus modelos de datos al formato TEDEF, como para las aseguradoras, que deben homologar cada caso antes de auditarlo. El resultado es un proceso de liquidaciones que genera una alta fricción operativa entre todas las partes involucradas.
+
+\section{El proceso de auditoría médica}
+
+La auditoría de liquidaciones médicas es hoy un proceso que depende en gran medida de la revisión manual. Cada liquidación que ingresa a la IAFAS es evaluada por un auditor médico, un profesional de la salud con experiencia clínica, quien verifica la pertinencia del diagnóstico, la coherencia entre los procedimientos y los medicamentos prescritos, el cumplimiento de las coberturas contractuales y la razonabilidad de los costos facturados, conforme a los acuerdos previamente pactados entre financiador y prestador.
+
+Es importante considerar los mecanismos de pago, pues determinan los incentivos de cada actor. Las atenciones ambulatorias operan bajo el modelo de Costo Paciente Mes (CPM), un pago fijo per cápita que transfiere el riesgo operativo a la IPRESS: al recibir un monto predeterminado, independientemente del consumo real, el prestador tiene incentivos para ser eficiente en el uso de los recursos. Las atenciones hospitalarias, en cambio, se liquidan mediante \textit{Fee for Service} (FFS), un esquema de facturación abierta en el que cada procedimiento, medicamento e insumo se cobra por separado. Bajo FFS, los incentivos están estructuralmente alineados con la sobrefacturación: a mayor volumen de servicios registrados, mayor el reembolso. Esta asimetría convierte las liquidaciones hospitalarias en el punto de mayor riesgo económico para la aseguradora y refuerza la necesidad de una auditoría rigurosa precisamente donde el proceso manual es más lento y costoso.
+
+Los datos operativos del problema son concretos:
+
+\begin{itemize}
+    \item Tiempo por caso: 30 a 45 minutos de revisión por liquidación hospitalaria.
+    \item Capacidad diaria: aproximadamente 13 casos por auditor por jornada.
+    \item Carga por lote: un lote de 101 liquidaciones requiere 75.8 horas de trabajo manual.
+    \item Distribución del esfuerzo: gran parte del tiempo del auditor médico se destina a casos rutinarios de bajo riesgo.
+    \item Tasa de aprobación automatizada: limitada; se realiza un muestreo priorizado, según la experiencia de cada auditor, para una revisión humana completa.
+\end{itemize}
+El auditor médico posee una alta especialización clínica, pero la estructura actual lo obliga a dedicar la mayor parte de su tiempo a tareas operativas repetitivas. Los casos complejos, como
+
+inconsistencias clínicas graves, sobrecostos sistemáticos y fraudes como procedimientos fantasma (prótesis o dispositivos facturados pero no implantados), reciben menos atención de la que merecen porque el auditor está ocupado procesando la cola de casos triviales. Además, el modelo actual no es escalable: un crecimiento en el volumen de atenciones exige contratar proporcionalmente más auditores médicos especializados, un recurso escaso y costoso.
+
+Para dimensionar la carga operativa, una liquidación hospitalaria típica contiene entre 17 y 368 ítems (el rango observado en el \textit{dataset} de estudio). Un caso de medicina interna con 17 ítems puede resolverse en 15 minutos. Un caso de cardiología hemodinámica con 368 ítems y stents coronarios requiere 45 minutos o más porque el auditor debe verificar la pertinencia de cada dispositivo frente a las coberturas del plan, contrastar los códigos de procedimientos con el diagnóstico y evaluar si los costos de los materiales de alto valor se encuentran dentro de los rangos aceptables. Ambos casos reciben hoy el mismo tratamiento: una revisión manual completa.
+
+\section{Cuantificación del problema}
+
+A nivel del sistema EPS, el TEDEF registró en 2024 un total de 2,522,496 atenciones valorizadas en S/ 1,164.7 millones. Las hospitalizaciones representan apenas el 1.6 \% del volumen pero concentran el 30.5 \% del gasto, con un costo por caso 27.5 veces superior al ambulatorio \cite{susalud2024tedef}.
+
+El análisis exploratorio de Capstone 1, sobre 68,521 liquidaciones de una IPRESS especializada en alta complejidad, muestra una concentración aún mayor (Tabla II.1). El perfil de complejidad de la IPRESS de origen explica los costos promedio más elevados en comparación con el sistema.
+
+\begin{table}[H]
+    \centering
+    \caption{Comparación de indicadores entre la muestra de Capstone 1 y TEDEF 2024}
+    \label{tab:comparacion-capstone-tedef}
+
+    \begin{tabular}{p{0.38\textwidth} p{0.25\textwidth} p{0.25\textwidth}}
+        \toprule
+        \textbf{Indicador}
+        & \textbf{Capstone 1 (muestra)}
+        & \textbf{TEDEF 2024 (sistema)} \\
+        \midrule
+        Hosp. como \% del volumen & 1.6\,\%  & 1.6\,\%  \\
+        Hosp. como \% del costo   & 35.5\,\% & 30.5\,\% \\
+        Costo promedio hosp.      & S/ 21,840 & S/ 8,976 \\
+        Ratio hosp./ambulatorio   & 34x & 27.5x \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+La concentración de costos en hospitalizaciones, constante en ambas fuentes, justifica focalizar el MVP en este tipo de atención. Las oportunidades de detección de inconsistencias y sobrecostos son proporcionalmente mayores en casos de alta complejidad, precisamente en el segmento donde el sistema opera con mayor volumen económico y menor automatización.
+
+La tasa de inconsistencias del 13 \% en las aprobaciones indica que un volumen no menor de liquidaciones está siendo aprobado con observaciones que podrían haberse detectado con un análisis más sistemático. El MLR superior al 90 \% excede en 5 puntos porcentuales o más el benchmark internacional del 85 \%, lo que sugiere un margen de mejora en la eficiencia de la gestión técnica de siniestros \cite{topol2019high}. La tasa de inconsistencias del 13 \% y el MLR superior al 90 \% provienen de información levantada en entrevista con el Gerente General de la IAFAS. Si bien se trata de una fuente experta del negocio, estos valores deben interpretarse como referencia contextual y no como medición auditada del estudio.
+
+Los sistemas de información fragmentados agravan el problema. Cada IPRESS utiliza un ERP diferente y formatos propietarios para la transmisión de liquidaciones. En medicamentos, la adopción del estándar GTIN en la trama TEDEF ha mitigado significativamente la heterogeneidad: un mismo fármaco se identifica mediante un código de barras único independientemente del prestador. Sin embargo, en los procedimientos médicos, la heterogeneidad es pasmosa. Cada EPS mantiene un catálogo propietario con codificación, granularidad y nomenclatura distintas. Un trabajo de homologación realizado por los autores sobre el catálogo de una EPS de primer nivel (16,110 códigos vigentes) reveló que estos procedimientos se mapean a solo 4,707 códigos CPT únicos, una relación 3.4:1 que evidencia la redundancia y fragmentación de los catálogos propietarios.
+
+A nivel de nomenclatura, un mismo procedimiento puede aparecer como RIESGOCORONARIO-TRIGLIC. -COLEST.-HDL-LDL-VLDL en una EPS y como PERFIL LIPIDICO COMPLETO en otra, refiriéndose ambas al mismo panel de colesterol (CPT 82465). Esta heterogeneidad dificulta la detección automatizada de duplicados y sobrecostos, y es una de las razones por las que la industria no ha avanzado hacia la auto-adjudicación \cite{mandl2012ehr}. NexusCare aborda esta brecha mediante la normalización de texto con funciones específicas para el español peruano y el \textit{keyword matching} tolerante a variaciones de escritura.
+
+\section{\textit{Stakeholders}}
+
+La solución involucra a cuatro actores con intereses diferenciados y se presentan en la
+Tabla~\ref{tab:stakeholders-nexuscare}
+
+El auditor médico es el usuario operativo directo del sistema. Su perfil combina un alto conocimiento clínico con una trayectoria predominantemente operativa. NexusCare no busca reemplazar su criterio, sino transformar su rol: de revisor exhaustivo de cada expediente a supervisor
+
+\begin{table}[H]
+    \centering
+    \caption{\textit{Stakeholders} principales de NexusCare}
+    \label{tab:stakeholders-nexuscare}
+
+    \begin{tabular}{
+        p{0.28\textwidth}
+        p{0.34\textwidth}
+        p{0.32\textwidth}
+    }
+        \toprule
+        \textbf{\textit{Stakeholder}}
+        & \textbf{Interés principal}
+        & \textbf{Relación con NexusCare} \\
+        \midrule
+
+        Gerente de Salud (IAFAS)
+        & Gestión del MLR y aprobación de inversión tecnológica
+        & Sponsor ejecutivo; valida el impacto económico. \\
+
+        Auditor médico (IAFAS)
+        & Eficiencia operativa y mantenimiento de la calidad clínica
+        & Usuario principal; valida las recomendaciones de IA. \\
+
+        IPRESS
+        & Ciclos de pago potencialmente más rápidos y menos glosas injustificadas
+        & Beneficiario indirecto de una mayor eficiencia. \\
+
+        SUSALUD
+        & Cumplimiento regulatorio y protección del asegurado
+        & Marco normativo que la solución debe satisfacer. \\
+
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+estratégico de un flujo priorizado por inteligencia artificial, concentrando su experiencia en los casos que generan mayor valor.
+
+Los pacientes, aunque no interactúan con el sistema, son beneficiarios indirectos. Un proceso de auditoría más eficiente reduce los tiempos de resolución de las liquidaciones, lo que podría acelerar los ciclos de pago a las IPRESS. Al disminuir su carga financiera, estas podrían trasladar eficiencias a costos más competitivos y, en consecuencia, a planes de salud más accesibles. Adicionalmente, una mejor detección de inconsistencias protege al paciente de prácticas de facturación que podrían indicar atención inadecuada o procedimientos cobrados pero no realizados.
+
+\section{Antecedentes y estado del arte}
+
+En mercados maduros, la automatización de liquidaciones médicas es una industria consolidada. En Estados Unidos, las aseguradoras de salud operan con tasas de auto-adjudicación que promedian el 80 \%, con líderes del sector alcanzando entre 85 \% y 95 \% en liquidaciones ambulatorias y de farmacia \cite{hcim2024autoadjudication}. Plataformas como Cotiviti (que atiende a más de 100 planes de salud), Optum (con más de 2,000 ingenieros dedicados a IA) y HealthEdge han evolucionado desde motores de reglas determinísticos hacia sistemas híbridos que incorporan \textit{machine learning} y, más recientemente, modelos de lenguaje. Optum lanzó en 2025 una plataforma de validación de cobertura en tiempo real con Azure OpenAI, y EXL Health desarrolló un LLM específico para seguros que, según sus evaluaciones internas, supera en 30 \% a GPT-4 en tareas del dominio \cite{exl2024insurance}. Sin embargo, estas soluciones operan sobre infraestructuras de datos estandarizadas (EDI X12, HL7 FHIR) y marcos de codificación unificados (CPT, ICD-10-CM) que no existen en el mercado peruano.
+
+El potencial del aprendizaje automático para identificar patrones en datos clínicos complejos que escapan al análisis humano convencional ha sido documentado ampliamente  \cite{obermeyer2016future}. La literatura académica reciente ofrece un panorama matizado sobre el uso de LLM en tareas administrativas de salud. Soroush et al. \cite{soroush2024coders}, en NEJM AI, evaluaron GPT-4 en codificación médica y encontraron tasas de coincidencia exacta inferiores al 50 \% sin ajuste fino, un resultado que cuestiona el uso de LLM generalistas para tareas de codificación estructurada. No obstante, Mustafa et al. \cite{mustafa2025coding}, en npj Health Systems, demostraron que el \textit{fine-tuning} sobre pares códigodescripción ICD-10 eleva esa precisión del 1 \% al 97 \%. Un hallazgo relevante para NexusCare proviene de Dorfner et al. \cite{dorfner2024biomedical}: en una evaluación de modelos biomédicos especializados frente a sus contrapartes generalistas, los modelos especializados tuvieron un rendimiento inferior en todas las métricas evaluadas sobre datos médicos no vistos. Este resultado es consistente con lo observado en el benchmark de NexusCare, donde MedGemma 27B fue superado por Claude Sonnet en capacidad de discriminación.
+
+En América Latina, Colombia es el caso más avanzado. La ADRES desarrolló un sistema inteligente de auditoría mediante alianzas con Microsoft, AWS, Google Cloud y Oracle, y en 2025 seleccionó un prototipo basado en agentes especializados que examinan distintos aspectos de cada factura médica \cite{consultorsalud2025adres}. Brasil proyecta invertir USD 527 millones en IA para seguros en 2026 \cite{cnseg2026ia}, con plataformas locales como ITCygnus operando ya en más de 350 municipios, con validación automática de códigos ICD-10 frente a estándares brasileños.
+
+En el Perú, el ecosistema de liquidaciones médicas sigue siendo mayoritariamente manual. La plataforma TEDEF de SUSALUD estandariza el intercambio electrónico de datos entre IPRESS e IAFAS, pero no incorpora inteligencia artificial en el procesamiento: opera como validador de formato, no como auditor de contenido. Los proyectos de IA de EsSalud se enfocan en aplicaciones clínicas, no en el procesamiento de liquidaciones, y no se identificó ninguna solución de IA para la auditoría de liquidaciones operando en el mercado peruano. El marco regulatorio, sin embargo, avanza: la Ley No 31814 y su reglamento (DS 115-2025-PCM), vigentes desde enero de 2026, clasifican la salud como sector de alto riesgo para aplicaciones de IA y establecen requisitos de supervisión humana y transparencia algorítmica, requisitos que NexusCare incorpora desde su diseño.
+
+NexusCare se posiciona en esta brecha: entre las soluciones comerciales de mercados maduros, que requieren una infraestructura de datos que el Perú aún no posee, y la ausencia de herramientas locales. La arquitectura de dos fases (reglas + LLM) responde a la realidad del mercado peruano (datos heterogéneos, catálogos propietarios, ausencia de FHIR) con un enfoque que no depende de la estandarización previa del ecosistema para funcionar.
+
+\newpage

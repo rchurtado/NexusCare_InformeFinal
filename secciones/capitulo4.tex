@@ -1,0 +1,48 @@
+\addcontentsline{toc}{section}{CAPÍTULO IV}
+
+\chapter{MARCO METODOLÓGICO}
+El desarrollo de NexusCare se apoyó en tres marcos de trabajo que operan en paralelo, cada uno sobre una dimensión distinta del problema: qué construir, cómo modelar y cómo asegurar la fiabilidad del sistema en producción.
+\section{\textit{Lean Startup}}
+
+El marco de \textit{Lean Startup} \cite{ries2011lean,blank2013lean} guía las decisiones de producto y la validación de hipótesis con el usuario final.
+
+\begin{itemize}
+     \item \textbf{\textit{Build}:} el producto se desarrolló con la participación directa de auditores médicos, utilizando datos reales (101 liquidaciones hospitalarias del Q3 2025 de MediVida) desde la primera iteración.
+    \item \textbf{\textit{Measure}:} las métricas de validación se definieron antes de escribir código: tiempo por lote, tasa de \textit{fast-track}, concordancia auditor–sistema y tasa de falsos positivos.
+    \item \textbf{\textit{Learn}:} el ciclo de iteración se fijó entre 2 y 4 semanas, con el \textit{feedback} del auditor sobre la calidad de las justificaciones clínicas y la calibración de los umbrales de riesgo.
+\end{itemize}
+Si el auditor no confía en el resultado del sistema ni lo incorpora en su flujo de trabajo, la calidad técnica del modelo resulta irrelevante \cite{char2018ethical}.
+
+\section{\textit{Data Science Lifecycle}}
+
+El ciclo de vida de ciencia de datos estructura el trabajo analítico y de modelado, adaptando principios de CRISP-DM al contexto de sistemas basados en LLM.
+
+\begin{itemize}
+     \item \textbf{\textit{Understand}:} análisis profundo del dominio clínico-regulatorio realizado en Capstone 1, donde se procesaron 68,521 liquidaciones para caracterizar patrones de diagnóstico, costos y especialidades \cite{hurtado2025nexuscare}.
+
+    \item \textbf{\textit{Model}:} \textit{benchmark} comparativo de cinco modelos (Claude Sonnet 4, Claude Opus 4.6, GPT-5.4, Gemini 2.5 Pro, MedGemma 27B) sobre 101 liquidaciones reales (505 evaluaciones totales), evaluando consistencia, profundidad clínica, costo y latencia.
+
+     \item \textbf{\textit{Deploy}:} \textit{pipeline} de producción con manejo de errores, estimación de costos y procesamiento por lotes con \textit{logging} estructurado.   
+\end{itemize}
+La etapa de modelado difiere del ciclo clásico de \textit{machine learning} porque no se entrenan modelos propios. En su lugar, se evalúa y selecciona la combinación óptima de modelos preentrenados, y se diseñan los \textit{prompts} y la lógica de orquestación que determinan el comportamiento del sistema \cite{sculley2015debt}.
+
+\section{MLOps}
+
+El marco MLOps asegura la reproducibilidad, trazabilidad y mantenibilidad del sistema en operación.
+\begin{itemize}
+    \item \textbf{CI/CD:} 190 pruebas automatizadas distribuidas en 7 archivos de \textit{test} (checker, matchers, pipeline, escalation, vault, \textit{golden set}, integration), ejecutables con pytest.
+
+    \item \textbf{\textit{Golden Set:}}  conjunto curado de 17 liquidaciones con clasificaciones esperadas (10 fasttrack, 2 complejas, 2 condicionales, 3 geriátricos de alta complejidad), utilizado como regresión para validar que los cambios en umbrales o \textit{prompts} no degradan las decisiones del pipeline.
+    
+    \item \textbf{Versionado}: los \textit{prompts} clínicos, las configuraciones de planes y los archivos de configuración de modelos se gestionan bajo control de versiones junto con el código fuente.
+
+    \item \textbf{Monitoreo:} \textit{logging} estructurado en cada etapa del pipeline (anonimización, Fase 1, Fase 2, escalación, decisión), con seguimiento de métricas de latencia, errores de \textit{parsing} y costos estimados por llamada a API.
+       
+    
+\end{itemize}
+La adopción de prácticas MLOps es relevante en IA aplicada a la salud, donde la trazabilidad de cada decisión automatizada puede ser requerida en procesos de auditoría regulatoria o en disputas contractuales con las IPRESS \cite{rajkomar2019machine}.
+
+\section{Integración de los tres \textit{frameworks}}
+
+Los tres marcos cubren dimensiones distintas sin solaparse. \textit{Lean Startup} obliga a confrontar cada supuesto de negocio con el usuario real antes de invertir en el desarrollo. El \textit{Data Science Lifecycle} ordena el trabajo analítico, desde la exploración de las 68,521 liquidaciones hasta la selección del modelo en el benchmark. MLOps, por su parte, responde a una exigencia concreta del sector: la Ley No 29733 \cite{peru2011ley29733} y la regulación de SUSALUD \cite{susalud2023anuario} requieren que las decisiones automatizadas sobre datos de salud sean trazables y reproducibles. Sin esa trazabilidad, el sistema no es desplegable en el contexto regulatorio peruano.
+\newpage

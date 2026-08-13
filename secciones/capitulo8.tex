@@ -1,0 +1,242 @@
+\addcontentsline{toc}{section}{CAPÍTULO VIII}
+\chapter{DESARROLLO Y CONSTRUCCIÓN}
+
+\section{Cronología de desarrollo}
+
+El desarrollo de \textbf{NexusCare} abarca dos ciclos académicos con objetivos y entregables distintos.
+
+\textbf{Capstone 1 (agosto–diciembre 2025)} produjo un prototipo de concepto basado en MedGemma- 4B, un modelo de fundación médica de 4 mil millones de parámetros desarrollado por Google DeepMind. El modelo se desplegó localmente y procesó 101 liquidaciones hospitalarias con una tasa de \textit{parsing} exitoso del 93 \% (7 casos fallaron por límite de contexto). El prototipo validó parcialmente tres hipótesis técnicas: que un LLM puede generar análisis clínicos estructurados sobre liquidaciones, que el tiempo de procesamiento se reduce de 45 a menos de 5 minutos por caso, y que la generación de puntajes de riesgo con justificaciones textuales es técnicamente viable. Sin embargo, el prototipo dejó abiertas tres brechas que definieron la hoja de ruta de Capstone 2: la calibración del modelo, la ausencia de verificación contractual y la falta de protección de datos personales.
+
+\textbf{Capstone 2 (enero–marzo 2026)} reconstruyó el sistema desde la arquitectura. El cambio más significativo fue abandonar MedGemma-4B como modelo único y adoptar una arquitectura de dos fases con múltiples modelos. La primera decisión fue separar la verificación contractual (Fase 1) del análisis clínico (Fase 2), motivada por la observación de que MedGemma confundía exclusiones contractuales con inconsistencias clínicas. La segunda fue realizar un \textit{benchmark} comparativo de cinco modelos para seleccionar la combinación óptima basándose en datos, no en supuestos. La tercera fue construir un \textit{Identity Vault} para anonimización de PII antes de enviar datos al LLM, en cumplimiento con la Ley 29733.
+
+La cronología del desarrollo fue la siguiente. En enero, el foco estuvo en el motor de reglas contractuales (nexuscare/compliance/) y en la extracción semiautomática de configuraciones de plan a partir de los contratos en formato PDF de MediVida. Febrero fue el mes más intenso: se ejecutó el benchmark de cinco modelos (505 evaluaciones), se diseñó la estrategia escalonada
+
+Sonnet+Opus y se implementó el \textit{pipeline} integrado con orquestador, escalación y motor de decisión. El último mes se dedicó a la calibración (el \textit{Golden Set} de 17 liquidaciones, los umbrales de decisión) y a la interfaz React del auditor.
+
+Dos decisiones de diseño fueron descartadas durante el proceso. La primera fue el despliegue de MedGemma 27B en un \textit{endpoint} de Vertex AI con GPU A100: aunque funcionó técnicamente, el modelo demostró menor capacidad de discriminación que Claude Sonnet y un \textit{throughput} inferior, con un costo comparable. El \textit{endpoint} se desmanteló tras el benchmark. La segunda fue un módulo de detección de fraude basado en patrones de prescripción por médico, que requería acceso a datos de identidad del médico tratante, incompatible con la decisión de \textit{privacy by design}  adoptada en la sección 7.3.
+
+La siguiente tabla~\ref{tab:cronologia-desarrollo} resume la cronología de iteraciones:
+
+\begin{table}[H]
+    \centering
+    \caption{Cronología de iteraciones del desarrollo}
+    \label{tab:cronologia-desarrollo}
+
+    \scriptsize
+    \setlength{\tabcolsep}{4pt}
+    \renewcommand{\arraystretch}{1.25}
+
+    \begin{tabular}{
+        p{0.14\textwidth}
+        p{0.12\textwidth}
+        p{0.19\textwidth}
+        p{0.34\textwidth}
+        p{0.15\textwidth}
+    }
+        \toprule
+        \textbf{Fase}
+        & \textbf{Periodo}
+        & \textbf{Foco principal}
+        & \textbf{Entregables clave}
+        & \textbf{Decisiones descartadas} \\
+        \midrule
+
+        Capstone 1
+        & Ago.--dic. 2025
+        & Prototipo MedGemma-4B
+        & 101 liquidaciones procesadas, 93\,\% de éxito y tres
+          hipótesis validadas.
+        & --- \\
+
+        Capstone 2, ene.
+        & Ene. 2026
+        & Motor de reglas contractuales
+        & Módulo \texttt{compliance/} y extracción de planes desde
+          PDF hacia JSON.
+        & --- \\
+
+        Capstone 2, feb.
+        & Feb. 2026
+        & Benchmark y pipeline
+        & 505 evaluaciones, estrategia escalonada Sonnet + Opus
+          y orquestador.
+        & \textit{Endpoint} MedGemma 27B. \\
+
+        Capstone 2, mar.
+        & Mar. 2026
+        & Calibración e interfaz
+        & \textit{Golden Set} de 17 \textit{claims}, umbrales de
+          decisión e interfaz React para el auditor.
+        & Módulo de detección de fraude. \\
+
+        \bottomrule
+    \end{tabular}
+\end{table}
+\section{Dataset y preparación}
+
+El \textit{dataset}  del MVP consiste en 101 liquidaciones hospitalarias del Q3 2025 de MediVida, almacenadas como archivos JSON individuales en data/hospitalization q3 2025/. Los datos originales provienen de la plataforma TEDEF en formato Parquet (cabecera.parquet, detalle all.parquet), que se transformaron a JSON normalizado durante Capstone 1. Cada liquidación contiene entre 5 y 368 ítems de servicio, con un promedio de S/21,840 por caso.
+
+La anonimización se implementó en dos niveles. A nivel de \textit{dataset} , el nombre de la IAFAS fue sustituido por un seudónimo (MediVida) desde la fase de preparación de datos. A nivel de pipeline, el \textit{Identity Vault} sustituye los nombres de pacientes y médicos por identificadores UUID
+
+v4 antes de cada invocación al LLM, manteniendo la edad y el sexo como cuasiidentificadores requeridos para la validación clínica de códigos CIE-10.
+
+Los registros proxy de pacientes (data/proxy records q3 2025/) complementan las liquidaciones con información de contexto clínico: visitas previas del paciente (single visit/ para pacientes con una sola atención, multi visit/ para pacientes con historial), indexados mediante patient index.json. Estos registros permiten al sistema evaluar si una hospitalización es un evento aislado o parte de una condición crónica, lo que influye en la evaluación de consistencia clínica.
+
+\section{Construcción del \textit{Golden Set}}
+
+El \textit{Golden Set} es un conjunto curado de 17 liquidaciones con clasificaciones esperadas, definido en nexuscare/pipeline/golden set.py. Su función es doble: regresión y calibración de umbrales. Es importante notar que el \textit{Golden Set} no constituye un conjunto de validación independiente: los umbrales de decisión (45, 70) se calibraron usando estos mismos 17 casos, por lo que su uso posterior para evaluar esos umbrales tiene circularidad inherente. Su valor radica en la regresión continua.
+
+La selección de las 17 liquidaciones siguió criterios deliberados para cubrir los escenarios representativos del pipeline:
+
+\textbf{10 candidatas a \textit{fast-track}} Liquidaciones rutinarias con cobertura completa (> 95 \%), pacientes elegibles y diagnósticos consistentes con los servicios facturados. Se seleccionaron para cubrir diversidad de especialidades, incluyendo traumatología, medicina interna, cirugía general, pediatría, gastroenterología, neumología y nefrología.
+
+\textbf{2 casos complejos pero consistentes} Liquidaciones con alto número de ítems donde la expectativa es FAST_TRACK o REVISION_RAPIDA. Estos casos prueban que el LLM no penaliza por volumen cuando la consistencia clínica es adecuada.
+
+\textbf{2 casos con ítems condicionales} Liquidaciones de urología con medicamentos cuya cobertura depende del diagnóstico. Validan que el \textit{routing} de ítems condicionales funciona correctamente.
+
+\textbf{3 casos geriátricos de alta complejidad} Pacientes de 81, 89 y 99 años en el plan Más 65. Estos casos validan que el sistema no penaliza por edad cuando la cobertura contractual es completa.
+
+Las clasificaciones esperadas de las 17 liquidaciones fueron validadas por un auditor médico con experiencia en liquidaciones hospitalarias. Una limitación del \textit{Golden Set} es que las clasificaciones fueron definidas por un único auditor, por lo que no es posible calcular acuerdo interevaluador.
+
+Cada entrada del \textit{Golden Set} especifica el \textit{routing} esperado de Fase 1, el estado de elegibilidad, el ratio mínimo de cobertura, el puntaje máximo aceptable de Fase 2 y la decisión final esperada. Los \textit{tests} automatizados en tests/test golden set.py verifican estas expectativas.
+
+La composición completa del \textit{Golden Set} se detalla en la siguiente tabla~\ref{tab:composicion-golden-set}:
+
+\begin{table}[H]
+    \centering
+    \caption{Composición del \textit{Golden Set}}
+    \label{tab:composicion-golden-set}
+
+    \scriptsize
+    \setlength{\tabcolsep}{3.5pt}
+    \renewcommand{\arraystretch}{1.15}
+
+    \begin{tabular}{
+        c
+        l
+        p{0.23\textwidth}
+        c
+        c
+        l
+        p{0.22\textwidth}
+    }
+        \toprule
+        \textbf{\#}
+        & \textbf{claim\_id}
+        & \textbf{Especialidad}
+        & \textbf{Edad}
+        & \textbf{Ítems}
+        & \textbf{Plan}
+        & \textbf{Decisión esperada} \\
+        \midrule
+
+        1  & H0710606 & Traumatología y Ortopedia & 70 & 133 & \texttt{mas\_65} & \texttt{FAST\_TRACK} \\
+        2  & H0710688 & Traumatología y Ortopedia & 70 & 5   & \texttt{mas\_65} & \texttt{FAST\_TRACK} \\
+        3  & H0710710 & Medicina Interna           & 79 & 127 & \texttt{mas\_65} & \texttt{FAST\_TRACK} \\
+        4  & H0710288 & Pediatría                   & 3  & 14  & \texttt{premium} & \texttt{FAST\_TRACK} \\
+        5  & H0710396 & Medicina Interna            & 33 & 26  & \texttt{premium} & \texttt{FAST\_TRACK} \\
+        6  & H0710206 & Traumatología               & 55 & 50  & \texttt{premium} & \texttt{FAST\_TRACK} \\
+        7  & H0710871 & Cirugía General             & 39 & 139 & \texttt{premium} & \texttt{FAST\_TRACK} \\
+        8  & H0710170 & Gastroenterología           & 58 & 118 & \texttt{premium} & \texttt{FAST\_TRACK} \\
+        9  & H0711614 & Neumología                  & 42 & 73  & \texttt{premium} & \texttt{FAST\_TRACK} \\
+        10 & H0711305 & Nefrología                   & 77 & 53  & \texttt{mas\_65} & \texttt{FAST\_TRACK} \\
+        11 & H0710712 & Neurocirugía                 & 34 & 310 & \texttt{premium} & \texttt{FAST\_TRACK / REVISION} \\
+        12 & H0711699 & Cirugía Cardiovascular       & 75 & 252 & \texttt{mas\_65} & \texttt{FAST\_TRACK / REVISION} \\
+        13 & H0710636 & Urología                     & 56 & 149 & \texttt{premium} & \texttt{FAST\_TRACK / REVISION} \\
+        14 & H0712022 & Urología                     & 65 & 118 & \texttt{mas\_65} & \texttt{FAST\_TRACK / REVISION} \\
+        15 & H0710235 & ---                          & 81 & --- & \texttt{mas\_65} & \texttt{FAST\_TRACK / REVISION} \\
+        16 & H0710395 & ---                          & 89 & --- & \texttt{mas\_65} & \texttt{FAST\_TRACK / REVISION} \\
+        17 & H0710770 & ---                          & 99 & 276 & \texttt{mas\_65} & \texttt{FAST\_TRACK / REVISION} \\
+
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Proceso de benchmark}
+
+El benchmark se ejecutó mediante el módulo nexuscare/benchmark/run benchmark.py. Las 101 liquidaciones fueron evaluadas por los cinco modelos, generando 505 evaluaciones individuales.
+
+La ejecución se paralelizó por modelo dentro de cada liquidación: para cada caso, los cinco modelos se invocaron simultáneamente mediante ThreadPoolExecutor(max workers=5), donde cada worker ejecuta una llamada HTTP independiente a la API del modelo correspondiente. La paralelización redujo el tiempo total del benchmark de aproximadamente 14 horas en una ejecución secuencial a cerca de 4 horas.
+
+Los parámetros de ejecución fueron: temperatura 0.1 para todos los modelos, max \textit{tokens} de 4,096 para los modelos de API y 2,048 para MedGemma, limitado por su contexto de 8,192 \textit{tokens}. MedGemma 27B se ejecutó en un \textit{endpoint} de Vertex AI con GPU A100 de 80 GB, utilizando el formato condensado del \textit{prompt}.
+
+
+El \textit{parsing} de respuestas utilizó una cadena de \textit{fallback} implementada en extract json(): primero intenta un \textit{parsing} JSON directo; si falla, elimina las cercas de \textit{Markdown}; si eso también falla, busca el primer objeto JSON válido mediante \textit{regex}. Los resultados se almacenaron en un JSON consolidado con metadatos de ejecución y en archivos de texto individuales por \textit{claim} y modelo para inspección manual.
+La configuración por modelo se resume en la siguiente tabla~\ref{tab:configuracion-benchmark-modelos}:
+
+\begin{table}[H]
+    \centering
+    \caption{Configuración del benchmark por modelo}
+    \label{tab:configuracion-benchmark-modelos}
+
+    \footnotesize
+    \setlength{\tabcolsep}{5pt}
+    \renewcommand{\arraystretch}{1.2}
+
+    \begin{tabular}{
+        p{0.18\textwidth}
+        p{0.16\textwidth}
+        p{0.12\textwidth}
+        p{0.10\textwidth}
+        p{0.13\textwidth}
+        p{0.23\textwidth}
+    }
+        \toprule
+        \textbf{Modelo}
+        & \textbf{Proveedor}
+        & \textbf{max\_tokens}
+        & \textbf{\textit{timeout}}
+        & \textbf{Temperatura}
+        & \textbf{Notas} \\
+        \midrule
+
+        Claude Sonnet 4
+        & Anthropic API
+        & 4,096
+        & 120 s
+        & \textit{default}
+        & Modelo de \textit{screening}. \\
+
+        Claude Opus 4.6
+        & Anthropic API
+        & 4,096
+        & 180 s
+        & \textit{default}
+        & Análisis profundo. \\
+
+        GPT-5.4
+        & OpenAI API
+        & 4,096
+        & 180 s
+        & \textit{default}
+        & \texttt{max\_completion\_tokens}. \\
+
+        Gemini 2.5 Pro
+        & Google AI Studio
+        & 8,192
+        & 180 s
+        & 0.1
+        & --- \\
+
+        MedGemma 27B
+        & Vertex AI (A100)
+        & 2,048
+        & 300 s
+        & 0.1
+        & \textit{Prompt} condensado. \\
+
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Iteraciones de \textit{prompt engineering}}
+
+El diseño del \textit{prompt} clínico evolucionó entre tres versiones con diferencias sustantivas.
+
+\textbf{\textit{Prompt} del benchmark} Definía al modelo como “auditor médico experto en seguros de salud en Perú” y solicitaba un informe JSON con cinco secciones: consistencia diagnóstico-procedimiento, consistencia diagnóstico-especialidad, protocolo farmacológico, materiales e insumos, y hallazgos críticos. La escala de riesgo original del benchmark usaba tres bandas: 0–30 (bajo), 31–60 (medio), 61–100 (alto). El \textit{prompt} instruye responder solamente con el JSON, lo que redujo los errores de \textit{parsing} a menos del 3 \%.
+
+\textbf{\textit{Prompt} de producción} Incorpora tres cambios respecto al \textit{prompt} del benchmark. Primero, la instrucción anti-sesgo más relevante del sistema: “La verificación de cobertura contractual ya fue realizada por el sistema de reglas (Capa 1). Tu rol es exclusivamente la evaluación clínica.” Segundo, se inyecta el contexto de Fase 1 directamente en el \textit{prompt}: estado de elegibilidad, porcentaje de cobertura, número de exclusiones detectadas y detalle de cada exclusión. Tercero, la escala de riesgo se recalibró a cuatro bandas: 0–25 (muy bajo), 26–45 (bajo), 46–70 (medio), 71–100 (alto).
+
+Las guías de calibración del \textit{prompt} de producción contienen instrucciones negativas explícitas para evitar penalizar complejidad clínica inherente, volumen de ítems y medicamentos genéricos estándar cuando son clínicamente consistentes.
+
+\textbf{\textit{Prompt} de Opus para escalación} Define al modelo como “auditor médico SENIOR” y le proporciona el resultado previo de Sonnet. La instrucción clave es que puede confirmar, ajustar o descartar los hallazgos de Sonnet. Este diseño convierte a Opus en un revisor de segundo nivel, no en un evaluador independiente que repite el análisis desde cero.
