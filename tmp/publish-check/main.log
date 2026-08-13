@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.3.17)  13 AUG 2026 17:49
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.3.17)  13 AUG 2026 17:53
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -998,129 +998,109 @@ Package pdftex.def Info: ./images/ORCID128px.png  used on input line 41.
 
 {C:/Users/roberto/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/ro
 berto/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/newtx/ntx-ot1-tlf.enc} <./i
-mages/Logo versión 4.png> <./images/ORCID128px.png>] (encabezados/dedicatoria.
-tex
-LaTeX Font Info:    Trying to load font information for OT1+minntx on input lin
-e 4.
-(C:\Users\roberto\AppData\Local\Programs\MiKTeX\tex/latex/newtx\ot1minntx.fd
-File: ot1minntx.fd 2023/09/09 v1.1 font definition file for OT1/minntx
-)
-LaTeX Font Info:    Font shape `OT1/minntx/m/n' will be
-(Font)              scaled to size 12.0pt on input line 4.
-LaTeX Font Info:    Font shape `OT1/minntx/m/n' will be
-(Font)              scaled to size 8.8pt on input line 4.
-LaTeX Font Info:    Font shape `OT1/minntx/m/n' will be
-(Font)              scaled to size 6.6pt on input line 4.
-LaTeX Font Info:    Font shape `OML/ntxmi/m/it' will be
-(Font)              scaled to size 12.0pt on input line 4.
-LaTeX Font Info:    Font shape `OML/ntxmi/m/it' will be
-(Font)              scaled to size 8.8pt on input line 4.
-LaTeX Font Info:    Font shape `OML/ntxmi/m/it' will be
-(Font)              scaled to size 6.6pt on input line 4.
-LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
-(Font)              scaled to size 12.0pt on input line 4.
-LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
-(Font)              scaled to size 8.8pt on input line 4.
-LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
-(Font)              scaled to size 6.6pt on input line 4.
-LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
-(Font)              scaled to size 12.0pt on input line 4.
-LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
-(Font)              scaled to size 8.8pt on input line 4.
-LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
-(Font)              scaled to size 6.6pt on input line 4.
-LaTeX Font Info:    Trying to load font information for U+ntxmia on input line 
-4.
-(C:\Users\roberto\AppData\Local\Programs\MiKTeX\tex/latex/newtx\untxmia.fd
-File: untxmia.fd 2024/04/09 Fontinst v1.933 font definitions for U/ntxmia.
-)
-LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
-(Font)              scaled to size 12.0pt on input line 4.
-LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
-(Font)              scaled to size 8.8pt on input line 4.
-LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
-(Font)              scaled to size 6.6pt on input line 4.
-LaTeX Font Info:    Trying to load font information for U+ntxsym on input line 
-4.
-(C:\Users\roberto\AppData\Local\Programs\MiKTeX\tex/latex/newtx\untxsym.fd
-File: untxsym.fd 2023/08/16 Fontinst v1.933 font definitions for U/ntxsym.
-)
-LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
-(Font)              scaled to size 12.0pt on input line 4.
-LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
-(Font)              scaled to size 8.8pt on input line 4.
-LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
-(Font)              scaled to size 6.6pt on input line 4.
-LaTeX Font Info:    Trying to load font information for U+ntxsyc on input line 
-4.
-(C:\Users\roberto\AppData\Local\Programs\MiKTeX\tex/latex/newtx\untxsyc.fd
-File: untxsyc.fd 2012/04/12 Fontinst v1.933 font definitions for U/ntxsyc.
-)
-LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
-(Font)              scaled to size 12.0pt on input line 4.
-LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
-(Font)              scaled to size 8.8pt on input line 4.
-LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
-(Font)              scaled to size 6.6pt on input line 4.
-LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
-(Font)              scaled to size 12.0pt on input line 4.
-LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
-(Font)              scaled to size 8.8pt on input line 4.
-LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
-(Font)              scaled to size 6.6pt on input line 4.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 4.
-(C:\Users\roberto\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
-File: umsa.fd 2013/01/14 v3.01 AMS symbols A
-)
-LaTeX Font Info:    Trying to load font information for U+msb on input line 4.
-(C:\Users\roberto\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
-File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-)
-LaTeX Font Info:    Font shape `OT1/ntxtlf/b/n' will be
-(Font)              scaled to size 12.0pt on input line 4.
-
-Underfull \hbox (badness 10000) in paragraph at lines 4--4
-
- []
-
-LaTeX Font Info:    Font shape `OT1/ntxtlf/m/sl' will be
-(Font)              scaled to size 12.0pt on input line 4.
-[2
-
-]) (encabezados/agradecimientos.tex
-Underfull \hbox (badness 10000) in paragraph at lines 4--4
-
- []
-
-[3
-
-])
+mages/Logo versión 4.png> <./images/ORCID128px.png>]
 (C:\Users\roberto\Documents\UTEC\Capstone\InformeFInal\tmp\publish-check\main.t
 oc
 LaTeX Info: Redefining \. on input line 2.
 LaTeX Info: Redefining \% on input line 2.
 LaTeX Info: Redefining \. on input line 3.
 LaTeX Info: Redefining \% on input line 3.
+LaTeX Font Info:    Trying to load font information for OT1+minntx on input lin
+e 5.
+(C:\Users\roberto\AppData\Local\Programs\MiKTeX\tex/latex/newtx\ot1minntx.fd
+File: ot1minntx.fd 2023/09/09 v1.1 font definition file for OT1/minntx
+)
+LaTeX Font Info:    Font shape `OT1/minntx/m/n' will be
+(Font)              scaled to size 12.0pt on input line 5.
+LaTeX Font Info:    Font shape `OT1/minntx/m/n' will be
+(Font)              scaled to size 8.8pt on input line 5.
+LaTeX Font Info:    Font shape `OT1/minntx/m/n' will be
+(Font)              scaled to size 6.6pt on input line 5.
+LaTeX Font Info:    Font shape `OML/ntxmi/m/it' will be
+(Font)              scaled to size 12.0pt on input line 5.
+LaTeX Font Info:    Font shape `OML/ntxmi/m/it' will be
+(Font)              scaled to size 8.8pt on input line 5.
+LaTeX Font Info:    Font shape `OML/ntxmi/m/it' will be
+(Font)              scaled to size 6.6pt on input line 5.
+LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
+(Font)              scaled to size 12.0pt on input line 5.
+LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
+(Font)              scaled to size 8.8pt on input line 5.
+LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
+(Font)              scaled to size 6.6pt on input line 5.
+LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
+(Font)              scaled to size 12.0pt on input line 5.
+LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
+(Font)              scaled to size 8.8pt on input line 5.
+LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
+(Font)              scaled to size 6.6pt on input line 5.
+LaTeX Font Info:    Trying to load font information for U+ntxmia on input line 
+5.
+(C:\Users\roberto\AppData\Local\Programs\MiKTeX\tex/latex/newtx\untxmia.fd
+File: untxmia.fd 2024/04/09 Fontinst v1.933 font definitions for U/ntxmia.
+)
+LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
+(Font)              scaled to size 12.0pt on input line 5.
+LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
+(Font)              scaled to size 8.8pt on input line 5.
+LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
+(Font)              scaled to size 6.6pt on input line 5.
+LaTeX Font Info:    Trying to load font information for U+ntxsym on input line 
+5.
+(C:\Users\roberto\AppData\Local\Programs\MiKTeX\tex/latex/newtx\untxsym.fd
+File: untxsym.fd 2023/08/16 Fontinst v1.933 font definitions for U/ntxsym.
+)
+LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
+(Font)              scaled to size 12.0pt on input line 5.
+LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
+(Font)              scaled to size 8.8pt on input line 5.
+LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
+(Font)              scaled to size 6.6pt on input line 5.
+LaTeX Font Info:    Trying to load font information for U+ntxsyc on input line 
+5.
+(C:\Users\roberto\AppData\Local\Programs\MiKTeX\tex/latex/newtx\untxsyc.fd
+File: untxsyc.fd 2012/04/12 Fontinst v1.933 font definitions for U/ntxsyc.
+)
+LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
+(Font)              scaled to size 12.0pt on input line 5.
+LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
+(Font)              scaled to size 8.8pt on input line 5.
+LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
+(Font)              scaled to size 6.6pt on input line 5.
+LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
+(Font)              scaled to size 12.0pt on input line 5.
+LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
+(Font)              scaled to size 8.8pt on input line 5.
+LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
+(Font)              scaled to size 6.6pt on input line 5.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 5.
+(C:\Users\roberto\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 5.
+(C:\Users\roberto\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
 LaTeX Font Info:    Font shape `OT1/ntxtlf/m/it' will be
 (Font)              scaled to size 12.0pt on input line 15.
-[4
+[2
 
-] [5] [6])
+] [3] [4])
 \tf@toc=\write4
 \openout4 = `main.toc'.
 
-[7]
+[5]
 (C:\Users\roberto\Documents\UTEC\Capstone\InformeFInal\tmp\publish-check\main.l
 ot
 LaTeX Info: Redefining \. on input line 2.
 LaTeX Info: Redefining \% on input line 2.
 LaTeX Info: Redefining \. on input line 3.
 LaTeX Info: Redefining \% on input line 3.
-[8])
+[6])
 \tf@lot=\write5
 \openout5 = `main.lot'.
 
-[9]
+[7]
 (C:\Users\roberto\Documents\UTEC\Capstone\InformeFInal\tmp\publish-check\main.l
 of
 LaTeX Info: Redefining \. on input line 2.
@@ -1131,39 +1111,41 @@ LaTeX Info: Redefining \% on input line 3.
 \tf@lof=\write6
 \openout6 = `main.lof'.
 
-[10]
+[8]
 LaTeX Font Info:    Font shape `OT1/ntxtlf/m/n' will be
-(Font)              scaled to size 24.88pt on input line 75.
+(Font)              scaled to size 24.88pt on input line 72.
 LaTeX Font Info:    Font shape `OT1/ntxtlf/b/n' will be
-(Font)              scaled to size 24.88pt on input line 75.
+(Font)              scaled to size 24.88pt on input line 72.
 
 (C:\Users\roberto\Documents\UTEC\Capstone\InformeFInal\tmp\publish-check\main.l
 oa)
 \tf@loa=\write7
 \openout7 = `main.loa'.
 
-[11
+[9
 
-] (secciones/resumen.tex) (secciones/abstract.tex [12
+] (secciones/resumen.tex) (secciones/abstract.tex [10
 
 
-] [13
+] [11
 
 ]) (secciones/capitulo1.tex
 Cap\'{\i }tulo I.
 ------------------------------------------------------------------------------
  I INTRODUCCIÓN
 ------------------------------------------------------------------------------
-[14
+LaTeX Font Info:    Font shape `OT1/ntxtlf/b/n' will be
+(Font)              scaled to size 12.0pt on input line 5.
+[12
 
 ]) (secciones/capitulo2.tex
 Cap\'{\i }tulo II.
 ------------------------------------------------------------------------------
  II CONTEXTO DEL PROBLEMA
 ------------------------------------------------------------------------------
-[15
+[13
 
-] [16]
+] [14]
 LaTeX Font Info:    Font shape `OT1/ntxtlf/m/n' will be
 (Font)              scaled to size 10.95pt on input line 41.
 LaTeX Font Info:    Font shape `OT1/ntxtlf/b/n' will be
@@ -1173,7 +1155,7 @@ Underfull \hbox (badness 1642) in paragraph at lines 47--48
 []\OT1/ntxtlf/b/n/12 Capstone 1 (mues-
  []
 
-[17] [18]
+[15] [16]
 Overfull \hbox (65.60971pt too wide) in paragraph at lines 64--65
 []\OT1/minntx/m/n/12 A ni-vel de no-men-cla-tu-ra, un mis-mo pro-ce-di-mien-to 
 pue-de apa-re-cer co-mo RIESGOCORONARIO-
@@ -1193,12 +1175,12 @@ Overfull \hbox (10.35513pt too wide) in paragraph at lines 78--107
  [][] 
  []
 
-[19] [20] [21]) (secciones/capitulo3.tex
+[17] [18] [19]) (secciones/capitulo3.tex
 Cap\'{\i }tulo III.
 ------------------------------------------------------------------------------
  III OBJETIVOS DEL PROYECTO
 ------------------------------------------------------------------------------
-[22
+[20
 
 ]
 Underfull \hbox (badness 2237) in paragraph at lines 46--47
@@ -1215,19 +1197,19 @@ Overfull \hbox (13.8112pt too wide) in paragraph at lines 23--63
  [][] 
  []
 
-[23]) (secciones/capitulo4.tex
+[21]) (secciones/capitulo4.tex
 Cap\'{\i }tulo IV.
 ------------------------------------------------------------------------------
  IV MARCO METODOLÓGICO
 ------------------------------------------------------------------------------
-[24
+[22
 
-] [25] [26]) (secciones/capitulo5.tex
+] [23] [24]) (secciones/capitulo5.tex
 Cap\'{\i }tulo V.
 ------------------------------------------------------------------------------
  V AUTODIAGNÓSTICO INICIAL
 ------------------------------------------------------------------------------
-[27
+[25
 
 ]
 Underfull \hbox (badness 10000) in paragraph at lines 40--41
@@ -1340,12 +1322,12 @@ Overfull \hbox (5.80467pt too wide) in paragraph at lines 68--115
  [][] 
  []
 
-[28] [29]) (secciones/capitulo6.tex
+[26] [27]) (secciones/capitulo6.tex
 Cap\'{\i }tulo VI.
 ------------------------------------------------------------------------------
  VI DEFINICIÓN DEL MVP
 ------------------------------------------------------------------------------
-[30
+[28
 
 ]
 Overfull \hbox (15.18991pt too wide) in paragraph at lines 49--50
@@ -1360,32 +1342,32 @@ File: ot1ntxtt.fd 2012/04/20 v3.1
 )
 LaTeX Font Info:    Font shape `OT1/ntxtt/m/n' will be
 (Font)              scaled to size 10.0pt on input line 94.
-[31] [32]) (secciones/capitulo7.tex [33]
+[29] [30]) (secciones/capitulo7.tex [31]
 Cap\'{\i }tulo VII.
 ------------------------------------------------------------------------------
  VII ARQUITECTURA DE LA SOLUCIÓN
 ------------------------------------------------------------------------------
-<images/p23_figure_1.png, id=727, 799.98875pt x 1491.5725pt>
+<images/p23_figure_1.png, id=719, 799.98875pt x 1491.5725pt>
 File: images/p23_figure_1.png Graphic file (type png)
 <use images/p23_figure_1.png>
 Package pdftex.def Info: images/p23_figure_1.png  used on input line 21.
 (pdftex.def)             Requested size: 237.65477pt x 443.10538pt.
-[34
+[32
 
 ]
-<images/p24_figure_1.png, id=732, 1329.96875pt x 958.58125pt>
+<images/p24_figure_1.png, id=724, 1329.96875pt x 958.58125pt>
 File: images/p24_figure_1.png Graphic file (type png)
 <use images/p24_figure_1.png>
 Package pdftex.def Info: images/p24_figure_1.png  used on input line 28.
 (pdftex.def)             Requested size: 410.33786pt x 295.75294pt.
-[35 <./images/p23_figure_1.png (PNG copy)>]
-<images/p25_figure_1.png, id=739, 1329.96875pt x 778.91pt>
+[33 <./images/p23_figure_1.png (PNG copy)>]
+<images/p25_figure_1.png, id=731, 1329.96875pt x 778.91pt>
 File: images/p25_figure_1.png Graphic file (type png)
 <use images/p25_figure_1.png>
 Package pdftex.def Info: images/p25_figure_1.png  used on input line 35.
 (pdftex.def)             Requested size: 410.33786pt x 240.31863pt.
-[36 <./images/p24_figure_1.png (PNG copy)> <./images/p25_figure_1.png (PNG copy
-)>] [37]
+[34 <./images/p24_figure_1.png (PNG copy)> <./images/p25_figure_1.png (PNG copy
+)>] [35]
 LaTeX Font Info:    Trying to load font information for TS1+ntxtlf on input lin
 e 77.
 (C:\Users\roberto\AppData\Local\Programs\MiKTeX\tex/latex/newtx\ts1ntxtlf.fd
@@ -1409,29 +1391,29 @@ LaTeX Info: Symbol \textrightarrow not provided by
 LaTeX Info: Symbol \textrightarrow not provided by
             font family ntxtlf in TS1 encoding.
             Default family used instead on input line 77.
-[38]
+[36]
 LaTeX Font Info:    Font shape `OT1/ntxtt/m/n' will be
 (Font)              scaled to size 12.0pt on input line 101.
-[39]
+[37]
 LaTeX Font Info:    Font shape `OT1/ntxtlf/b/it' will be
 (Font)              scaled to size 10.0pt on input line 135.
-[40] [41] [42] [43]
-<images/p33_figure_1.png, id=783, 999.735pt x 1491.5725pt>
+[38] [39] [40] [41]
+<images/p33_figure_1.png, id=774, 999.735pt x 1491.5725pt>
 File: images/p33_figure_1.png Graphic file (type png)
 <use images/p33_figure_1.png>
 Package pdftex.def Info: images/p33_figure_1.png  used on input line 256.
 (pdftex.def)             Requested size: 296.99391pt x 443.10538pt.
-[44 <./images/p33_figure_1.png (PNG copy)>] [45]
+[42 <./images/p33_figure_1.png (PNG copy)>] [43]
 Overfull \hbox (7.80467pt too wide) in paragraph at lines 341--370
  [][] 
  []
 
-[46]) (secciones/capitulo8.tex [47]
+[44]) (secciones/capitulo8.tex [45]
 Cap\'{\i }tulo VIII.
 ------------------------------------------------------------------------------
  VIII DESARROLLO Y CONSTRUCCIÓN
 ------------------------------------------------------------------------------
-[48
+[46
 
 ]
 LaTeX Font Info:    Font shape `OT1/ntxtlf/m/n' will be
@@ -1489,7 +1471,7 @@ Overfull \hbox (14.34859pt too wide) in paragraph at lines 29--74
  [][] 
  []
 
-[49] [50] [51] [52]
+[47] [48] [49] [50]
 Overfull \hbox (0.64182pt too wide) in paragraph at lines 189--190
 []\OT1/ntxtlf/b/n/10 Temperatura| 
  []
@@ -1509,49 +1491,49 @@ Overfull \hbox (25.80466pt too wide) in paragraph at lines 176--230
  [][] 
  []
 
-[53]) (secciones/capitulo9.tex [54]
+[51]) (secciones/capitulo9.tex [52]
 Cap\'{\i }tulo IX.
 ------------------------------------------------------------------------------
  IX MÉTRICA PRINCIPAL DE VALIDACIÓN
 ------------------------------------------------------------------------------
-[55
+[53
 
-] [56]) (secciones/capitulo10.tex [57]
+] [54]) (secciones/capitulo10.tex [55]
 Cap\'{\i }tulo X.
 ------------------------------------------------------------------------------
  X EVALUACIÓN DE RESULTADOS
 ------------------------------------------------------------------------------
-<images/p46_figure_1.png, id=845, 1329.96875pt x 671.50874pt>
+<images/p46_figure_1.png, id=837, 1329.96875pt x 671.50874pt>
 File: images/p46_figure_1.png Graphic file (type png)
 <use images/p46_figure_1.png>
 Package pdftex.def Info: images/p46_figure_1.png  used on input line 12.
 (pdftex.def)             Requested size: 410.33786pt x 207.1819pt.
-[58
+[56
 
  <./images/p46_figure_1.png (PNG copy)>]
-<images/p47_figure_1.png, id=850, 1329.96875pt x 669.50125pt>
+<images/p47_figure_1.png, id=842, 1329.96875pt x 669.50125pt>
 File: images/p47_figure_1.png Graphic file (type png)
 <use images/p47_figure_1.png>
 Package pdftex.def Info: images/p47_figure_1.png  used on input line 22.
 (pdftex.def)             Requested size: 410.33786pt x 206.56253pt.
-[59 <./images/p47_figure_1.png (PNG copy)>] [60]
+[57 <./images/p47_figure_1.png (PNG copy)>] [58]
 Underfull \hbox (badness 3579) in paragraph at lines 161--162
 []\OT1/minntx/m/n/10 Tasa de re-co-men-da-ci[]on
  []
 
-<images/p50_figure_1.png, id=864, 1329.96875pt x 1304.875pt>
+<images/p50_figure_1.png, id=856, 1329.96875pt x 1304.875pt>
 File: images/p50_figure_1.png Graphic file (type png)
 <use images/p50_figure_1.png>
 Package pdftex.def Info: images/p50_figure_1.png  used on input line 190.
 (pdftex.def)             Requested size: 410.33786pt x 402.59564pt.
-[61] [62 <./images/p50_figure_1.png (PNG copy)>] [63]
+[59] [60 <./images/p50_figure_1.png (PNG copy)>] [61]
 Overfull \hbox (26.0852pt too wide) in paragraph at lines 283--284
 []\OT1/ntxtlf/b/n/12 Nivel 1: \OT1/ntxtlf/b/it/12 Rou-ting \OT1/ntxtlf/b/n/12 d
 e Fa-se 1 \OT1/minntx/m/n/12 Los 17 \OT1/ntxtlf/m/it/12 tests \OT1/minntx/m/n/1
 2 pa-ra-me-tri-za-dos de test[]routing[]matches[]expected
  []
 
-[64]
+[62]
 Underfull \hbox (badness 2512) in paragraph at lines 314--315
 []\OT1/ntxtlf/b/n/10 Costo por lo-te (101
  []
@@ -1561,7 +1543,7 @@ Overfull \hbox (13.80467pt too wide) in paragraph at lines 306--341
  [][] 
  []
 
-[65]
+[63]
 Underfull \hbox (badness 4765) in paragraph at lines 388--389
 []\OT1/minntx/m/n/10 Derivado: re-duc-ci[]on del
  []
@@ -1581,7 +1563,7 @@ Overfull \hbox (22.35512pt too wide) in paragraph at lines 359--400
  [][] 
  []
 
-[66]
+[64]
 Underfull \hbox (badness 4120) in paragraph at lines 476--477
 []\OT1/ntxtlf/b/it/10 Fast-track \OT1/ntxtlf/b/n/10 efec-ti-
  []
@@ -1591,47 +1573,47 @@ Overfull \hbox (13.26074pt too wide) in paragraph at lines 468--503
  [][] 
  []
 
-[67]) (secciones/capitulo11.tex [68]
+[65]) (secciones/capitulo11.tex [66]
 Cap\'{\i }tulo XI.
 ------------------------------------------------------------------------------
  XI LIMITACIONES Y RIESGOS
 ------------------------------------------------------------------------------
-[69
+[67
 
-] [70] [71]) (secciones/capitulo12.tex [72]
+] [68] [69]) (secciones/capitulo12.tex [70]
 Cap\'{\i }tulo XII.
 ------------------------------------------------------------------------------
  XII APRENDIZAJES Y LECCIONES
 ------------------------------------------------------------------------------
 LaTeX Font Info:    Font shape `TS1/ntxtlf/m/n' will be
 (Font)              scaled to size 12.0pt on input line 8.
-[73
+[71
 
 {C:/Users/roberto/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/tex-gyre/q-ts1.
-enc}] [74]) (secciones/capitulo13.tex [75]
+enc}] [72]) (secciones/capitulo13.tex [73]
 Cap\'{\i }tulo XIII.
 ------------------------------------------------------------------------------
  XIII CONCLUSIONES
 ------------------------------------------------------------------------------
-[76
+[74
 
-] [77]) (secciones/capitulo14.tex [78]
+] [75]) (secciones/capitulo14.tex [76]
 Cap\'{\i }tulo XIV.
 ------------------------------------------------------------------------------
  XIV TRABAJO FUTURO
 ------------------------------------------------------------------------------
-[79
+[77
 
 ])
 (C:\Users\roberto\Documents\UTEC\Capstone\InformeFInal\tmp\publish-check\main.b
-bl [80] [81
+bl [78] [79
 
 ]
 LaTeX Font Info:    Font shape `OT1/ntxtlf/m/n' will be
 (Font)              scaled to size 8.8pt on input line 124.
-[82]) (secciones/anexos.tex [83] [84
+[80]) (secciones/anexos.tex [81] [82
 
-]) [85
+]) [83
 
 ]
 (C:\Users\roberto\Documents\UTEC\Capstone\InformeFInal\tmp\publish-check\main.a
@@ -1668,11 +1650,11 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (\end occurred when \iffalse on line 3 was incomplete)
 (\end occurred when \iffalse on line 3 was incomplete) 
 Here is how much of TeX's memory you used:
- 21868 strings out of 467871
- 348238 string characters out of 5417408
+ 21844 strings out of 467871
+ 347420 string characters out of 5417408
  773279 words of memory out of 5000000
- 50065 multiletter control sequences out of 15000+600000
- 701733 words of font info for 190 fonts, out of 8000000 for 9000
+ 50052 multiletter control sequences out of 15000+600000
+ 700985 words of font info for 189 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  89i,14n,131p,1486b,1382s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\roberto\AppDat
@@ -1687,9 +1669,9 @@ mb.pfb><C:/Users/roberto/AppData/Local/Programs/MiKTeX/fonts/type1/public/newtx
 ewtx/ztmr.pfb><C:/Users/roberto/AppData/Local/Programs/MiKTeX/fonts/type1/publi
 c/newtx/ztmri.pfb>
 Output written on C:\Users\roberto\Documents\UTEC\Capstone\InformeFInal\tmp\pub
-lish-check\main.pdf (85 pages, 1800942 bytes).
+lish-check\main.pdf (83 pages, 1799734 bytes).
 PDF statistics:
- 1086 PDF objects out of 1200 (max. 8388607)
- 219 named destinations out of 1000 (max. 500000)
+ 1077 PDF objects out of 1200 (max. 8388607)
+ 217 named destinations out of 1000 (max. 500000)
  774 words of extra memory for PDF output out of 10000 (max. 10000000)
 
