@@ -3,40 +3,40 @@
 \babel@toc {spanish}{}\relax 
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {2.1.}{\ignorespaces Comparación de indicadores entre la muestra de Capstone 1 y TEDEF 2024}}{18}{table.caption.10}%
-\contentsline {table}{\numberline {2.2.}{\ignorespaces \textit {Stakeholders} principales de NexusCare}}{19}{table.caption.12}%
+\contentsline {table}{\numberline {2.1.}{\ignorespaces Comparación de indicadores entre la muestra de Capstone 1 y TEDEF 2024}}{16}{table.caption.10}%
+\contentsline {table}{\numberline {2.2.}{\ignorespaces \textit {Stakeholders} principales de NexusCare}}{17}{table.caption.12}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {3.1.}{\ignorespaces Indicadores clave de rendimiento del proyecto}}{23}{table.caption.17}%
-\addvspace {10\p@ }
-\addvspace {10\p@ }
-\contentsline {table}{\numberline {5.1.}{\ignorespaces Supuestos no validados al inicio de Capstone 2}}{28}{table.caption.26}%
-\contentsline {table}{\numberline {5.2.}{\ignorespaces Matriz inicial de riesgos del proyecto}}{29}{table.caption.28}%
-\addvspace {10\p@ }
-\contentsline {table}{\numberline {6.1.}{\ignorespaces Perfil del usuario operativo del MVP}}{30}{table.caption.32}%
-\contentsline {table}{\numberline {6.2.}{\ignorespaces Requisitos funcionales del MVP}}{32}{table.caption.35}%
-\contentsline {table}{\numberline {6.3.}{\ignorespaces Requisitos no funcionales del MVP}}{32}{table.caption.36}%
-\addvspace {10\p@ }
-\contentsline {table}{\numberline {7.1.}{\ignorespaces Benchmark comparativo de modelos para la Fase 2}}{40}{table.caption.48}%
-\contentsline {table}{\numberline {7.2.}{\ignorespaces Reglas de decisión del \textit {pipeline} integrado}}{42}{table.caption.50}%
-\contentsline {table}{\numberline {7.3.}{\ignorespaces \textit {Stack} tecnológico de NexusCare}}{45}{table.caption.54}%
-\contentsline {table}{\numberline {7.4.}{\ignorespaces Distribución proyectada de decisiones por categoría}}{46}{table.caption.57}%
-\addvspace {10\p@ }
-\contentsline {table}{\numberline {8.1.}{\ignorespaces Cronología de iteraciones del desarrollo}}{49}{table.caption.60}%
-\contentsline {table}{\numberline {8.2.}{\ignorespaces Composición del \textit {Golden Set}}}{52}{table.caption.63}%
-\contentsline {table}{\numberline {8.3.}{\ignorespaces Configuración del benchmark por modelo}}{53}{table.caption.65}%
+\contentsline {table}{\numberline {3.1.}{\ignorespaces Indicadores clave de rendimiento del proyecto}}{21}{table.caption.17}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {10.1.}{\ignorespaces Correlación entre número de ítems por liquidación y \textit {risk score}}}{60}{table.caption.75}%
-\contentsline {table}{\numberline {10.2.}{\ignorespaces Distribución real de decisiones del \textit {pipeline} integrado}}{60}{table.caption.77}%
-\contentsline {table}{\numberline {10.3.}{\ignorespaces Cambio en la distribución de \textit {scores} de Sonnet}}{61}{table.caption.78}%
-\contentsline {table}{\numberline {10.4.}{\ignorespaces Estudio de ablación de la mejora en la tasa de \textit {fast-track}}}{63}{table.caption.80}%
-\contentsline {table}{\numberline {10.5.}{\ignorespaces Comparación de estrategias de procesamiento}}{66}{table.caption.84}%
-\contentsline {table}{\numberline {10.6.}{\ignorespaces Cumplimiento de los objetivos del proyecto}}{67}{table.caption.86}%
-\contentsline {table}{\numberline {10.7.}{\ignorespaces Sensibilidad de la reducción del tiempo por lote}}{67}{table.caption.87}%
-\contentsline {table}{\numberline {10.8.}{\ignorespaces Sensibilidad de la tasa efectiva de \textit {fast-track}}}{68}{table.caption.88}%
+\contentsline {table}{\numberline {5.1.}{\ignorespaces Supuestos no validados al inicio de Capstone 2}}{26}{table.caption.26}%
+\contentsline {table}{\numberline {5.2.}{\ignorespaces Matriz inicial de riesgos del proyecto}}{27}{table.caption.28}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {6.1.}{\ignorespaces Perfil del usuario operativo del MVP}}{28}{table.caption.32}%
+\contentsline {table}{\numberline {6.2.}{\ignorespaces Requisitos funcionales del MVP}}{30}{table.caption.35}%
+\contentsline {table}{\numberline {6.3.}{\ignorespaces Requisitos no funcionales del MVP}}{30}{table.caption.36}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {7.1.}{\ignorespaces Benchmark comparativo de modelos para la Fase 2}}{38}{table.caption.48}%
+\contentsline {table}{\numberline {7.2.}{\ignorespaces Reglas de decisión del \textit {pipeline} integrado}}{40}{table.caption.50}%
+\contentsline {table}{\numberline {7.3.}{\ignorespaces \textit {Stack} tecnológico de NexusCare}}{43}{table.caption.54}%
+\contentsline {table}{\numberline {7.4.}{\ignorespaces Distribución proyectada de decisiones por categoría}}{44}{table.caption.57}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {8.1.}{\ignorespaces Cronología de iteraciones del desarrollo}}{47}{table.caption.60}%
+\contentsline {table}{\numberline {8.2.}{\ignorespaces Composición del \textit {Golden Set}}}{50}{table.caption.63}%
+\contentsline {table}{\numberline {8.3.}{\ignorespaces Configuración del benchmark por modelo}}{51}{table.caption.65}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {10.1.}{\ignorespaces Correlación entre número de ítems por liquidación y \textit {risk score}}}{58}{table.caption.75}%
+\contentsline {table}{\numberline {10.2.}{\ignorespaces Distribución real de decisiones del \textit {pipeline} integrado}}{58}{table.caption.77}%
+\contentsline {table}{\numberline {10.3.}{\ignorespaces Cambio en la distribución de \textit {scores} de Sonnet}}{59}{table.caption.78}%
+\contentsline {table}{\numberline {10.4.}{\ignorespaces Estudio de ablación de la mejora en la tasa de \textit {fast-track}}}{61}{table.caption.80}%
+\contentsline {table}{\numberline {10.5.}{\ignorespaces Comparación de estrategias de procesamiento}}{64}{table.caption.84}%
+\contentsline {table}{\numberline {10.6.}{\ignorespaces Cumplimiento de los objetivos del proyecto}}{65}{table.caption.86}%
+\contentsline {table}{\numberline {10.7.}{\ignorespaces Sensibilidad de la reducción del tiempo por lote}}{65}{table.caption.87}%
+\contentsline {table}{\numberline {10.8.}{\ignorespaces Sensibilidad de la tasa efectiva de \textit {fast-track}}}{66}{table.caption.88}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {14.1.}{\ignorespaces Glosario de términos}}{85}{table.caption.108}%
+\contentsline {table}{\numberline {14.1.}{\ignorespaces Glosario de términos}}{83}{table.caption.108}%
 \contentsfinish 
