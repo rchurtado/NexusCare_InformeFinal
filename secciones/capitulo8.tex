@@ -82,7 +82,7 @@ v4 antes de cada invocación al LLM, manteniendo la edad y el sexo como cuasiide
 
 Los registros proxy de pacientes (data/proxy records q3 2025/) complementan las liquidaciones con información de contexto clínico: visitas previas del paciente (single visit/ para pacientes con una sola atención, multi visit/ para pacientes con historial), indexados mediante patient index.json. Estos registros permiten al sistema evaluar si una hospitalización es un evento aislado o parte de una condición crónica, lo que influye en la evaluación de consistencia clínica.
 
-\section{Construcción del \textit{Golden Set}}
+\section{Construcción del Golden Set}
 
 El \textit{Golden Set} es un conjunto curado de 17 liquidaciones con clasificaciones esperadas, definido en nexuscare/pipeline/golden set.py. Su función es doble: regresión y calibración de umbrales. Es importante notar que el \textit{Golden Set} no constituye un conjunto de validación independiente: los umbrales de decisión (45, 70) se calibraron usando estos mismos 17 casos, por lo que su uso posterior para evaluar esos umbrales tiene circularidad inherente. Su valor radica en la regresión continua.
 
@@ -229,7 +229,7 @@ La configuración por modelo se resume en la siguiente tabla~\ref{tab:configurac
     \end{tabular}
 \end{table}
 
-\section{Iteraciones de \textit{prompt engineering}}
+\section{Iteraciones de prompt engineering}
 
 El diseño del \textit{prompt} clínico evolucionó entre tres versiones con diferencias sustantivas.
 

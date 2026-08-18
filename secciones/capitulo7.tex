@@ -59,7 +59,7 @@ Los costos se almacenan como strings para preservar el formato original y se con
 
 La fuente de datos del MVP consiste en 101 liquidaciones hospitalarias del Q3 2025 de MediVida, complementadas con registros proxy de pacientes (visitas únicas y múltiples) indexados por un catálogo maestro (patient index.json).
 
-\section{\textit{Identity Vault}: protección de datos personales}
+\section{Identity Vault: protección de datos personales}
 
 Antes de que cualquier dato llegue al LLM, el sistema ejecuta un proceso de anonimización que implementa los principios de \textit{privacy} by design establecidos en Capstone 1 \cite{hurtado2025nexuscare}, en cumplimiento con la Ley No 29733 \cite{peru2011ley29733} y alineado con los principios de minimización de datos del GDPR \cite{eu2024aiact}.
 
@@ -235,7 +235,7 @@ Los umbrales (45, 70) se calibraron utilizando el \textit{Golden Set} de 17 liqu
 
 \noindent \textbf{3. \textit{Prompts} anti-sesgo:} instrucciones explícitas al LLM para evitar la sobre-penalización de liquidaciones rutinarias.
 
-\section{\textit{Front-end} del auditor}
+\section{Front-end del auditor}
 
 La interfaz de validación del auditor se implementó como una aplicación de página única (SPA) utilizando React 19, TypeScript 5.9, Vite 8, Tailwind CSS 4 y React Router 7.
 
@@ -257,7 +257,7 @@ Interfaz del auditor: vista de detalle de una liquidación (ClaimDetail).
 \caption{Interfaz del auditor: vista detallada de una liquidación.}
 \end{figure}
 
-\section{\textit{Stack} tecnológico}
+\section{Stack tecnológico}
 
 
 \begin{table}[H]
@@ -308,7 +308,7 @@ Interfaz del auditor: vista de detalle de una liquidación (ClaimDetail).
     \end{tabular}
 \end{table}
 
-\section{Decisiones de diseño y \textit{trade-offs}}
+\section{Decisiones de diseño y trade-offs}
 
 \noindent \textbf{1. Arquitectura de dos fases vs. LLM único} Fase 1 (reglas) + Fase 2 (IA) permite que las verificaciones contractuales sean determinísticas, reproducibles y auditables. El \textit{trade-off} es la complejidad adicional de mantener dos subsistemas sincronizados y las configuraciones de plan actualizadas.
 

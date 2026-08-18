@@ -64,7 +64,7 @@ Los tres modelos restantes resultaron inviables como modelo único, aunque por r
 
 Ningún modelo muestra correlación positiva significativa entre volumen y \textit{score}. Sonnet, el modelo seleccionado para \textit{screening}, presenta una correlación negativa. Esto descarta la hipótesis de que la capacidad discriminativa de Sonnet sea un artefacto de la complejidad del caso. La discriminación por sigma es una condición necesaria, pero no suficiente: la validación de precisión a nivel de hallazgo requiere un piloto con auditor real.
 
-\section{\textit{pipeline} integrado}
+\section{Pipeline integrado}
 
 El \textit{pipeline} completo (Fase 1 + Fase 2 con estrategia escalonada, \textit{prompts} de producción e \textit{Identity Vault} activo) se ejecutó sobre las 101 liquidaciones del \textit{dataset} . A diferencia de las proyecciones de la sección 7.10, esta ejecución invocó el LLM real con la configuración de producción.
 
@@ -276,7 +276,7 @@ En el ámbito de inconsistencias clínicas, el sistema detectó un expediente de
 
 Estos hallazgos ilustran que la Fase 2 aporta un valor que excede la verificación contractual de la Fase 1: la capacidad de cruzar el diagnóstico, los servicios facturados y los protocolos médicos esperados para señalar discrepancias que ameritan revisión humana.
 
-\section{Validación con \textit{Golden Set}}
+\section{Validación con Golden Set}
 
 El \textit{Golden Set} de 17 liquidaciones, cuyas clasificaciones esperadas fueron validadas por un auditor médico externo al equipo, constituye el mecanismo de regresión y calibración del \textit{pipeline}. No es un conjunto de validación independiente, pero cumple una función operativa esencial: detectar degradaciones ante cambios en el sistema.
 
